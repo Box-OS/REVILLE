@@ -1,0 +1,35 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "reville_hero": {
+      "type": "reville-hero",
+      "blocks": {
+        "cta": {
+          "type": "button",
+          "settings": {
+            "label": "Enter Now",
+            "style_class": "button-custom",
+            "custom_button_background": "#FF4D2E",
+            "custom_button_text": "#0A0B0D",
+            "custom_button_border": "#FF4D2E"
+          }
+        }
+      },
+      "block_order": ["cta"],
+      "settings": {
+        "wordmark_text": "REVILLE",
+        "tagline": "Buy in. Earn entries. Win the keys.",
+        "entry_goal": 340000
+      }
+    }
+  },
+  "order": ["reville_hero"]
+}

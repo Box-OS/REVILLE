@@ -1,0 +1,112 @@
+{% doc %}
+  Renders the REVILLE semi-circular tachometer gauge + live entry counter.
+
+  Reads the real entry count from a shop-level metafield (namespace `reville`,
+  key `total_entries`). That metafield does not exist in the store yet, so this
+  honestly renders 0 until it's created — never fabricate a placeholder number
+  here (see Reference/CLAUDE.md "Critical — Do Not Fabricate").
+
+  @param {number} [goal] - Target entry pool size used as the gauge's denominator.
+
+  @example
+  {% render 'reville-gauge', goal: section.settings.entry_goal %}
+{% enddoc %}
+
+{% liquid
+  assign current = shop.metafields.reville.total_entries.value | default: 0
+  assign goal = goal | default: 340000
+  if goal <= 0
+    assign goal = 1
+  endif
+
+  assign percent = current | times: 1.0 | divided_by: goal
+  if percent > 1
+    assign percent = 1
+  endif
+  if percent < 0
+    assign percent = 0
+  endif
+  assign percent = percent | round: 4
+
+  assign dash_offset = 1 | minus: percent
+%}
+
+<script src="{{ 'reville-gauge.js' | asset_url }}" type="module" fetchpriority="low"></script>
+
+<reville-gauge-component class="reville-gauge" data-current="{{ current }}">
+  <svg
+    class="reville-gauge__dial"
+    viewBox="0 0 240 130"
+    role="img"
+    aria-label="{{ current }} entries toward the giveaway goal"
+  >
+    <path
+      class="reville-gauge__arc-track"
+      d="M 20 120 A 100 100 0 0 1 220 120"
+      pathLength="1"
+      style="stroke: {{ settings.color_palette.color4 }};"
+    />
+    <path
+      ref="arc"
+      class="reville-gauge__arc-progress"
+      d="M 20 120 A 100 100 0 0 1 220 120"
+      pathLength="1"
+      style="stroke: {{ settings.color_palette.color6 }}; stroke-dasharray: 1 1; stroke-dashoffset: {{ dash_offset }};"
+    />
+  </svg>
+  <div class="reville-gauge__readout">
+    <strong ref="counter" class="reville-gauge__counter">{{ current }}</strong>
+    <span class="reville-gauge__label" style="color: {{ settings.color_palette.color5 }};">Entries</span>
+  </div>
+</reville-gauge-component>
+
+{% stylesheet %}
+  .reville-gauge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 22rem;
+  }
+
+  .reville-gauge__dial {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .reville-gauge__arc-track,
+  .reville-gauge__arc-progress {
+    fill: none;
+    stroke-linecap: round;
+    stroke-width: 12;
+  }
+
+  .reville-gauge__arc-progress {
+    transition: stroke-dashoffset 1s ease-out;
+  }
+
+  .reville-gauge__readout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-block-start: -2.5rem;
+  }
+
+  .reville-gauge__counter {
+    font-family: var(--font-mono--family);
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    line-height: 1;
+    color: var(--color-foreground);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .reville-gauge__label {
+    font-family: var(--font-accent--family);
+    font-size: 0.8rem;
+    letter-spacing: var(--letter-spacing-md);
+    text-transform: uppercase;
+  }
+{% endstylesheet %}

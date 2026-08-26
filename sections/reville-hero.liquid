@@ -1,0 +1,120 @@
+<div
+  class="section reville-hero spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+  data-testid="reville-hero-{{ section.id }}"
+>
+  <p class="reville-hero__wordmark">{{ section.settings.wordmark_text }}</p>
+  <p class="reville-hero__tagline" style="color: {{ settings.color_palette.color5 }};">{{ section.settings.tagline }}</p>
+
+  {% render 'reville-gauge', goal: section.settings.entry_goal %}
+
+  <div class="reville-hero__cta">
+    {% content_for 'blocks' %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .reville-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .reville-hero__wordmark {
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(3rem, 10vw, 6.5rem);
+    line-height: 1;
+    letter-spacing: var(--letter-spacing-sm);
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .reville-hero__tagline {
+    font-family: var(--font-body--family);
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    max-width: 32rem;
+    margin: 0;
+  }
+
+  .reville-hero__cta {
+    margin-block-start: 8px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Reville Hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "wordmark_text",
+      "label": "Wordmark",
+      "default": "REVILLE"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Buy in. Earn entries. Win the keys."
+    },
+    {
+      "type": "number",
+      "id": "entry_goal",
+      "label": "Entry pool goal",
+      "default": 340000,
+      "info": "Gauge fill target. TBD — currently an estimate pending the confirmed target pool size (Reference/CLAUDE.md)."
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "button"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reville Hero",
+      "category": "t:categories.layout",
+      "blocks": {
+        "cta": {
+          "type": "button",
+          "settings": {
+            "label": "Enter Now",
+            "style_class": "button-custom",
+            "custom_button_background": "#FF4D2E",
+            "custom_button_text": "#0A0B0D",
+            "custom_button_border": "#FF4D2E"
+          }
+        }
+      },
+      "block_order": ["cta"]
+    }
+  ]
+}
+{% endschema %}
