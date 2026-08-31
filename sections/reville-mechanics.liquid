@@ -1,0 +1,776 @@
+{% liquid
+  assign min_spend = section.settings.min_spend
+  assign max_spend = section.settings.max_spend
+  assign default_spend = section.settings.default_spend
+  assign min_multiplier = section.settings.min_multiplier
+  assign max_multiplier = section.settings.max_multiplier
+
+  if default_spend < min_spend
+    assign default_spend = min_spend
+  endif
+  if default_spend > max_spend
+    assign default_spend = max_spend
+  endif
+
+  assign spend_range = max_spend | minus: min_spend
+  if spend_range <= 0
+    assign spend_range = 1
+  endif
+
+  assign percent = default_spend | minus: min_spend | times: 1.0 | divided_by: spend_range
+  if percent > 1
+    assign percent = 1
+  elsif percent < 0
+    assign percent = 0
+  endif
+
+  assign multiplier_range = max_multiplier | minus: min_multiplier
+  assign default_multiplier = percent | times: multiplier_range | plus: min_multiplier
+  assign default_entries = default_spend | times: default_multiplier | floor
+
+  assign max_entries = max_spend | times: max_multiplier | ceil
+  assign digit_count = max_entries | append: '' | size
+  if digit_count < 3
+    assign digit_count = 3
+  endif
+
+  assign padded_entries = default_entries | append: ''
+  for i in (1..12)
+    if padded_entries.size >= digit_count
+      break
+    endif
+    assign padded_entries = '0' | append: padded_entries
+  endfor
+  assign entry_digit_chars = padded_entries | split: ''
+
+  assign percent_pct = percent | times: 100 | round
+  assign mid_spend = min_spend | plus: max_spend | divided_by: 2
+%}
+
+<div
+  class="section reville-mechanics spacing-style"
+  style="
+    {% render 'spacing-style', settings: section.settings %}
+    --rm-background: {{ settings.color_palette.background }};
+    --rm-color1: {{ settings.color_palette.color1 }};
+    --rm-color2: {{ settings.color_palette.color2 }};
+    --rm-color3: {{ settings.color_palette.color3 }};
+    --rm-color3-rgb: {{ settings.color_palette.color3.rgb }};
+    --rm-color4: {{ settings.color_palette.color4 }};
+    --rm-color5: {{ settings.color_palette.color5 }};
+    --rm-color6: {{ settings.color_palette.color6 }};
+    --rm-color6-rgb: {{ settings.color_palette.color6.rgb }};
+    --rm-color7: {{ settings.color_palette.color7 }};
+  "
+>
+  {% if section.settings.heading != blank %}
+    <div class="reville-mechanics__heading-row">
+      <h2 class="reville-mechanics__heading">{{ section.settings.heading }}</h2>
+      <div class="reville-mechanics__heading-rule"></div>
+    </div>
+  {% endif %}
+
+  <div class="reville-mechanics__grid">
+    <div class="reville-mechanics__panel reville-mechanics__panel--formula">
+      {% if section.settings.formula_eyebrow != blank or section.settings.formula_heading != blank %}
+        <div class="reville-mechanics__formula-intro">
+          {% if section.settings.formula_eyebrow != blank %}
+            <p class="reville-mechanics__eyebrow">{{ section.settings.formula_eyebrow }}</p>
+          {% endif %}
+          {% if section.settings.formula_heading != blank %}
+            <h3 class="reville-mechanics__formula-heading">{{ section.settings.formula_heading }}</h3>
+          {% endif %}
+          {% if section.settings.formula_description != blank %}
+            <div class="reville-mechanics__formula-description">{{ section.settings.formula_description }}</div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <div class="reville-mechanics__calc-intro">
+        <p class="reville-mechanics__eyebrow">{{ section.settings.calculator_label | default: 'Nitro Entry Calculator' }}</p>
+        {% if section.settings.calculator_hint != blank %}
+          <p class="reville-mechanics__calc-hint">{{ section.settings.calculator_hint }}</p>
+        {% endif %}
+      </div>
+
+      <script src="{{ 'reville-calculator.js' | asset_url }}" type="module" fetchpriority="low"></script>
+
+      <reville-calculator-component
+        class="reville-calc"
+        data-min-multiplier="{{ min_multiplier }}"
+        data-max-multiplier="{{ max_multiplier }}"
+        data-max-entries="{{ max_entries }}"
+      >
+        <div class="reville-calc__interface">
+          <div class="reville-calc__wheel">
+            <span class="reville-calc__wheel-bound">${{ max_spend }}</span>
+            <div class="reville-calc__wheel-channel">
+              <div class="reville-calc__wheel-ticks" aria-hidden="true">
+                {% for i in (1..9) %}<span></span>{% endfor %}
+              </div>
+              <input
+                type="range"
+                ref="slider"
+                class="reville-calc__slider"
+                min="{{ min_spend }}"
+                max="{{ max_spend }}"
+                step="{{ section.settings.spend_step }}"
+                value="{{ default_spend }}"
+                aria-label="Spend amount"
+                on:input="/sync"
+                on:pointerdown="/sync"
+              >
+              <div
+                ref="handle"
+                class="reville-calc__wheel-handle"
+                style="bottom: calc({{ percent_pct }}% - 16px);"
+                aria-hidden="true"
+              >
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+            <span class="reville-calc__wheel-bound">${{ min_spend }}</span>
+          </div>
+
+          <div class="reville-calc__display">
+            <div class="reville-calc__readouts">
+              <div>
+                <div class="reville-calc__readout-label">Your Spend</div>
+                <div class="reville-calc__readout-value">$<span ref="spendValue">{{ default_spend }}</span></div>
+              </div>
+              <div class="reville-calc__readout--right">
+                <div class="reville-calc__readout-label reville-calc__readout-label--accent">Multiplier Tier</div>
+                <div class="reville-calc__readout-value reville-calc__readout-value--accent">
+                  <span ref="multiplierValue">{{ default_multiplier | round: 2 }}</span>x
+                </div>
+              </div>
+            </div>
+
+            <div class="reville-calc__bar">
+              <div
+                ref="nitroFill"
+                class="reville-calc__bar-fill"
+                style="width: {{ percent_pct }}%;"
+              ></div>
+              <div class="reville-calc__bar-gloss" aria-hidden="true"></div>
+              <div ref="carIcon" class="reville-calc__bar-car" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+                  <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="reville-calc__scale" aria-hidden="true">
+              <span>${{ min_spend }}</span>
+              <span>${{ mid_spend }}</span>
+              <span>${{ max_spend }}</span>
+            </div>
+
+            <div class="reville-calc__result">
+              <div class="reville-calc__result-label">You Earn</div>
+              <div class="reville-calc__odometer">
+                {% for char in entry_digit_chars %}
+                  <span ref="entryDigits[]" class="reville-calc__digit">{{ char }}</span>
+                {% endfor %}
+              </div>
+              <div class="reville-calc__result-unit">Entries</div>
+            </div>
+          </div>
+        </div>
+      </reville-calculator-component>
+
+      {% if section.settings.calculator_disclaimer != blank %}
+        <p class="reville-mechanics__disclaimer">{{ section.settings.calculator_disclaimer }}</p>
+      {% endif %}
+    </div>
+
+    <div class="reville-mechanics__panel reville-mechanics__panel--specs">
+      {% if section.settings.specs_label != blank %}
+        <div class="reville-mechanics__specs-label">{{ section.settings.specs_label }}</div>
+      {% endif %}
+      {% if section.settings.vehicle_name != blank %}
+        <h3 class="reville-mechanics__vehicle-name">{{ section.settings.vehicle_name }}</h3>
+      {% endif %}
+      <div class="reville-mechanics__specs-list">
+        {% content_for 'blocks' %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .reville-mechanics__heading-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-block-end: 40px;
+  }
+
+  .reville-mechanics__heading {
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    text-transform: uppercase;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .reville-mechanics__heading-rule {
+    flex-grow: 1;
+    height: 1px;
+    background: var(--rm-color3);
+  }
+
+  .reville-mechanics__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  @media screen and (min-width: 990px) {
+    .reville-mechanics__grid {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+
+  .reville-mechanics__panel {
+    background: var(--rm-color1);
+    border: 1px solid var(--rm-color3);
+    border-radius: var(--style-border-radius-buttons-outset, 0.5rem);
+    padding: 32px;
+  }
+
+  .reville-mechanics__panel--formula {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow: hidden;
+    background-color: var(--rm-color1);
+    background-image:
+      linear-gradient(to right, rgba(var(--rm-color3-rgb), 0.55) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(var(--rm-color3-rgb), 0.55) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: center top;
+  }
+
+  .reville-mechanics__panel--formula::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--rm-color6);
+  }
+
+  .reville-mechanics__formula-intro {
+    padding-block-end: 24px;
+    border-block-end: 1px solid rgba(var(--rm-color3-rgb), 0.5);
+  }
+
+  .reville-mechanics__eyebrow {
+    font-family: var(--font-mono--family);
+    font-size: 0.75rem;
+    letter-spacing: var(--letter-spacing-md);
+    text-transform: uppercase;
+    color: var(--rm-color6);
+    margin: 0 0 8px;
+  }
+
+  .reville-mechanics__formula-heading {
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+
+  .reville-mechanics__formula-description {
+    font-family: var(--font-body--family);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--rm-color5);
+    max-width: 42rem;
+  }
+
+  .reville-mechanics__calc-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .reville-mechanics__calc-hint {
+    font-family: var(--font-body--family);
+    font-size: 0.95rem;
+    color: var(--rm-color5);
+    margin: 0;
+  }
+
+  .reville-calc {
+    display: block;
+  }
+
+  .reville-calc__interface {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: center;
+    background: var(--rm-background);
+    border: 1px solid var(--rm-color3);
+    border-radius: var(--style-border-radius-buttons-outset, 0.375rem);
+    padding: 24px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .reville-calc__interface {
+      flex-direction: row;
+      align-items: stretch;
+    }
+  }
+
+  /* Vertical racing wheel slider */
+  .reville-calc__wheel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  .reville-calc__wheel-bound {
+    font-family: var(--font-mono--family);
+    font-size: 0.7rem;
+    letter-spacing: var(--letter-spacing-md);
+    text-transform: uppercase;
+    color: var(--rm-color5);
+    white-space: nowrap;
+  }
+
+  .reville-calc__wheel-channel {
+    position: relative;
+    width: 48px;
+    height: 288px;
+    background: var(--rm-color1);
+    border: 2px solid var(--rm-color4);
+    border-radius: 4px;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 1);
+    overflow: hidden;
+  }
+
+  .reville-calc__wheel-ticks {
+    position: absolute;
+    inset: 16px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .reville-calc__wheel-ticks span {
+    display: block;
+    height: 1px;
+    width: 100%;
+    background: var(--rm-color3);
+  }
+
+  .reville-calc__slider {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 288px;
+    height: 48px;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    transform-origin: center;
+    margin: 0;
+    opacity: 0;
+    cursor: ns-resize;
+    z-index: 3;
+  }
+
+  .reville-calc__wheel-handle {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 32px;
+    background: var(--rm-color6);
+    border-block: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(var(--rm-color6-rgb), 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+    pointer-events: none;
+    z-index: 2;
+    transition: bottom 0.08s linear;
+  }
+
+  .reville-calc__wheel-handle span {
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.45);
+  }
+
+  /* Display + nitro bar */
+  .reville-calc__display {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .reville-calc__readouts {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-block-end: 24px;
+  }
+
+  .reville-calc__readout--right {
+    text-align: right;
+  }
+
+  .reville-calc__readout-label {
+    font-family: var(--font-body--family);
+    font-size: 0.7rem;
+    letter-spacing: var(--letter-spacing-md);
+    text-transform: uppercase;
+    color: var(--rm-color5);
+    margin-block-end: 4px;
+  }
+
+  .reville-calc__readout-label--accent {
+    color: var(--rm-color6);
+  }
+
+  .reville-calc__readout-value {
+    font-family: var(--font-mono--family);
+    font-size: 1.75rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .reville-calc__readout-value--accent {
+    color: var(--rm-color6);
+  }
+
+  .reville-calc__bar {
+    position: relative;
+    height: 48px;
+    background: var(--rm-color1);
+    border: 4px solid var(--rm-color4);
+    border-radius: 9999px;
+    overflow: hidden;
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.8);
+    margin-block-end: 8px;
+  }
+
+  .reville-calc__bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #4cc9f0;
+    background-image: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.05) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0.05) 75%,
+      transparent 75%,
+      transparent
+    );
+    background-size: 10px 10px;
+    transition: width 0.3s ease-out, background-color 0.3s ease-out;
+  }
+
+  .reville-calc__bar-gloss {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
+    pointer-events: none;
+  }
+
+  .reville-calc__bar-car {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.8);
+    z-index: 2;
+    transition: transform 0.3s ease-out, color 0.3s ease-out;
+  }
+
+  .reville-calc__bar-car--max {
+    color: var(--rm-color6);
+    transform: translateY(-50%) scale(1.2);
+    filter: drop-shadow(0 0 8px var(--rm-color6));
+  }
+
+  .reville-calc__scale {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono--family);
+    font-size: 0.625rem;
+    color: var(--rm-color5);
+    padding-inline: 8px;
+    margin-block-end: 32px;
+  }
+
+  .reville-calc__result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .reville-calc__result-label {
+    font-family: var(--font-body--family);
+    font-size: 0.75rem;
+    letter-spacing: var(--letter-spacing-md);
+    text-transform: uppercase;
+    color: var(--rm-color5);
+  }
+
+  .reville-calc__odometer {
+    display: flex;
+    gap: 2px;
+    padding: 4px;
+    background: var(--rm-color1);
+    border: 1px solid var(--rm-color3);
+    border-radius: var(--style-border-radius-buttons-outset, 0.375rem);
+  }
+
+  .reville-calc__digit {
+    display: block;
+    min-width: 1ch;
+    padding: 4px 8px;
+    font-family: var(--font-mono--family);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--rm-color6);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(
+      180deg,
+      var(--rm-color1) 0%,
+      var(--rm-color2) 50%,
+      var(--rm-color1) 100%
+    );
+    border-block: 1px solid var(--rm-color3);
+    border-radius: 2px;
+  }
+
+  .reville-calc__result-unit {
+    font-family: var(--font-mono--family);
+    font-size: 0.75rem;
+    letter-spacing: var(--letter-spacing-md);
+    text-transform: uppercase;
+    color: var(--rm-color6);
+  }
+
+  .reville-mechanics__disclaimer {
+    font-family: var(--font-body--family);
+    font-size: 0.75rem;
+    color: var(--rm-color5);
+    margin: 0;
+  }
+
+  .reville-mechanics__panel--specs {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .reville-mechanics__specs-label {
+    font-family: var(--font-mono--family);
+    font-size: 0.75rem;
+    letter-spacing: var(--letter-spacing-md);
+    text-transform: uppercase;
+    color: var(--rm-color5);
+    padding-block-end: 8px;
+    border-block-end: 1px solid var(--rm-color3);
+    margin-block-end: 24px;
+  }
+
+  .reville-mechanics__vehicle-name {
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    text-transform: uppercase;
+    margin: 0 0 24px;
+  }
+
+  .reville-mechanics__specs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex-grow: 1;
+    justify-content: center;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Reville Mechanics",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "The Mechanics"
+    },
+    {
+      "type": "header",
+      "content": "Formula panel"
+    },
+    {
+      "type": "text",
+      "id": "formula_eyebrow",
+      "label": "Eyebrow",
+      "default": "Formula"
+    },
+    {
+      "type": "text",
+      "id": "formula_heading",
+      "label": "Heading",
+      "default": "Price × Multiplier = Entries"
+    },
+    {
+      "type": "richtext",
+      "id": "formula_description",
+      "label": "Description",
+      "default": "<p>Every service booked at Nurbu Auto Centre and every product purchased in the Reville Shop earns entries toward the giveaway. Bigger spends unlock higher multiplier tiers.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Entry calculator"
+    },
+    {
+      "type": "text",
+      "id": "calculator_label",
+      "label": "Calculator label",
+      "default": "Nitro Entry Calculator"
+    },
+    {
+      "type": "text",
+      "id": "calculator_hint",
+      "label": "Calculator hint",
+      "default": "Slide the wheel to see how your spend translates to entries."
+    },
+    {
+      "type": "number",
+      "id": "min_spend",
+      "label": "Minimum spend ($)",
+      "default": 25
+    },
+    {
+      "type": "number",
+      "id": "max_spend",
+      "label": "Maximum spend ($)",
+      "default": 2500
+    },
+    {
+      "type": "number",
+      "id": "spend_step",
+      "label": "Slider step ($)",
+      "default": 25
+    },
+    {
+      "type": "number",
+      "id": "default_spend",
+      "label": "Default spend ($)",
+      "default": 500
+    },
+    {
+      "type": "number",
+      "id": "min_multiplier",
+      "label": "Multiplier at minimum spend",
+      "default": 1.5
+    },
+    {
+      "type": "number",
+      "id": "max_multiplier",
+      "label": "Multiplier at maximum spend",
+      "default": 2.5
+    },
+    {
+      "type": "text",
+      "id": "calculator_disclaimer",
+      "label": "Disclaimer",
+      "default": "Estimated — final multiplier tiers confirmed at checkout. See Official Rules.",
+      "info": "Multiplier tiers are still TBD (Reference/CLAUDE.md). Keep this visible until real pricing is confirmed."
+    },
+    {
+      "type": "header",
+      "content": "Vehicle specs panel"
+    },
+    {
+      "type": "text",
+      "id": "specs_label",
+      "label": "Panel label",
+      "default": "Vehicle Specs"
+    },
+    {
+      "type": "text",
+      "id": "vehicle_name",
+      "label": "Vehicle name",
+      "default": "BMW M850i xDrive"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_reville-spec-row"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reville Mechanics",
+      "category": "t:categories.layout",
+      "blocks": {
+        "engine": {
+          "type": "_reville-spec-row",
+          "settings": { "label": "Engine", "value": "4.4L Twin-Turbo V8" }
+        },
+        "power": {
+          "type": "_reville-spec-row",
+          "settings": { "label": "Power", "value": "523 HP / 553 lb-ft" }
+        },
+        "zero-sixty": {
+          "type": "_reville-spec-row",
+          "settings": { "label": "0-60 mph", "value": "3.6 Seconds" }
+        }
+      },
+      "block_order": ["engine", "power", "zero-sixty"]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,377 @@
+<!DOCTYPE html><html class="" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Reville Shop - High Performance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;family=JetBrains+Mono:wght@500;700&amp;family=Oswald:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "surface-container-lowest": "#190a08",
+                "error": "#ffb4ab",
+                "on-surface": "#fbdcd6",
+                "on-secondary-container": "#b1b6bb",
+                "tertiary-fixed-dim": "#64d4fc",
+                "on-secondary": "#2c3135",
+                "on-primary-fixed": "#3f0400",
+                "surface-tint": "#ffb4a5",
+                "primary-container": "#ff4d2e",
+                "carbon-bg": "#0A0B0D",
+                "inverse-surface": "#fbdcd6",
+                "surface-container-high": "#382622",
+                "text-dim": "#9BA0A8",
+                "surface-variant": "#43302c",
+                "on-primary-fixed-variant": "#8e1300",
+                "surface-container-low": "#281714",
+                "on-tertiary-container": "#002e3c",
+                "on-surface-variant": "#e5beb6",
+                "outline": "#ac8982",
+                "steel-dim": "#22252A",
+                "primary": "#ff4d2e",
+                "secondary": "#c2c7cc",
+                "surface-bright": "#483531",
+                "on-error": "#690005",
+                "tertiary-container": "#0e9dc3",
+                "secondary-container": "#42474c",
+                "on-error-container": "#ffdad6",
+                "surface-dim": "#1f0f0c",
+                "steel-panel-alt": "#1D2025",
+                "background": "#1f0f0c",
+                "on-background": "#fbdcd6",
+                "tertiary": "#64d4fc",
+                "on-primary": "#ffffff",
+                "on-tertiary-fixed": "#001f29",
+                "secondary-fixed-dim": "#c2c7cc",
+                "tertiary-fixed": "#baeaff",
+                "on-tertiary": "#003544",
+                "steel-border": "#3A3F47",
+                "surface-container": "#2c1b18",
+                "on-secondary-fixed": "#171c20",
+                "primary-fixed-dim": "#ffb4a5",
+                "steel-panel": "#16181C",
+                "primary-fixed": "#ffdad3",
+                "inverse-primary": "#ba1b00",
+                "surface": "#1f0f0c",
+                "outline-variant": "#5c403a",
+                "on-tertiary-fixed-variant": "#004d62",
+                "surface-container-highest": "#43302c",
+                "on-secondary-fixed-variant": "#42474c",
+                "on-primary-container": "#ffffff",
+                "secondary-fixed": "#dee3e8",
+                "error-container": "#93000a",
+                "inverse-on-surface": "#3f2c28"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+        },
+        "spacing": {
+                "grid-margin": "2rem",
+                "component-gap": "1rem",
+                "gutter": "1.5rem",
+                "section-gap": "5rem"
+        },
+        "fontFamily": {
+                "data-label": [
+                        "JetBrains Mono"
+                ],
+                "headline-xl": [
+                        "Oswald"
+                ],
+                "display-lg": [
+                        "Oswald"
+                ],
+                "label-caps": [
+                        "Inter"
+                ],
+                "headline-lg": [
+                        "Oswald"
+                ],
+                "data-odometer": [
+                        "JetBrains Mono"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Oswald"
+                ]
+        },
+        "fontSize": {
+                "data-label": [
+                        "12px",
+                        {
+                                "lineHeight": "1.4",
+                                "letterSpacing": "0.1em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "headline-xl": [
+                        "48px",
+                        {
+                                "lineHeight": "1.2",
+                                "letterSpacing": "0.04em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "display-lg": [
+                        "80px",
+                        {
+                                "lineHeight": "1.1",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "label-caps": [
+                        "12px",
+                        {
+                                "lineHeight": "1",
+                                "letterSpacing": "0.12em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "1.2",
+                                "letterSpacing": "0.04em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "data-odometer": [
+                        "44px",
+                        {
+                                "lineHeight": "1",
+                                "letterSpacing": "-0.05em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "1.5",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "28px",
+                        {
+                                "lineHeight": "1.2",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        body {
+            background-color: theme('colors.carbon-bg');
+            color: theme('colors.on-surface');
+            min-height: 100vh;
+        }
+        .redline-glow:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1), inset 0 2px 0 theme('colors.primary');
+            border-color: theme('colors.primary');
+            transform: translateY(-4px);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.carbon-bg');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.outline');
+            border-radius: theme('borderRadius.full');
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.text-dim');
+        }
+    </style>
+</head>
+<body class="antialiased flex flex-col pt-24 pb-section-gap bg-carbon-bg text-on-surface">
+<!-- TopNavBar (Shared Component) -->
+<nav class="fixed top-0 w-full z-50 bg-carbon-bg border-b border-steel-border shadow-sm transition-all duration-300">
+<div class="flex justify-between items-center h-20 px-grid-margin max-w-full">
+<div class="flex items-center gap-gutter">
+<a class="font-headline-xl text-headline-xl text-primary tracking-tighter italic mr-8" href="#">REVILLE</a>
+<div class="hidden md:flex gap-component-gap h-full items-center"><a class="text-text-dim hover:text-primary transition-colors font-label-caps text-label-caps h-full flex items-center px-2 hover:bg-steel-panel-alt" href="#">GIVEAWAYS</a><a class="text-text-dim hover:text-primary transition-colors font-label-caps text-label-caps h-full flex items-center px-2 hover:bg-steel-panel-alt" href="#">NURBU</a><a class="text-primary border-b-2 border-primary pb-1 font-label-caps text-label-caps h-full flex items-center px-2" href="#">MERCH</a><a class="text-text-dim hover:text-primary transition-colors font-label-caps text-label-caps h-full flex items-center px-2 hover:bg-steel-panel-alt" href="#">PROFILE</a></div>
+</div>
+<div class="flex items-center gap-component-gap">
+<button class="text-text-dim hover:text-primary transition-colors w-10 h-10 flex items-center justify-center rounded-full hover:bg-steel-panel-alt">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">search</span>
+</button>
+<button class="bg-transparent border-2 border-steel-border text-on-surface hover:text-primary hover:border-primary font-label-caps text-label-caps px-6 py-2 rounded-DEFAULT transition-all duration-300 uppercase tracking-widest hidden md:block">LOGIN</button>
+<button class="bg-primary text-on-primary font-label-caps text-label-caps px-6 py-2 rounded-DEFAULT hover:bg-primary-container transition-all duration-300 uppercase tracking-widest flex items-center gap-2 font-bold">
+                    GET ENTRIES
+                </button>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-grow w-full max-w-7xl mx-auto px-grid-margin mt-section-gap flex flex-col gap-section-gap">
+<!-- Shop Header Section -->
+<header class="flex flex-col md:flex-row justify-between items-end gap-gutter border-b border-steel-border pb-gutter">
+<div class="max-w-2xl">
+<h1 class="font-display-lg text-display-lg text-on-surface uppercase mb-4 font-bold">Performance Gear</h1>
+<p class="font-body-lg text-body-lg text-text-dim max-w-xl">
+                    Upgrade your setup. Every dollar spent in the Reville Shop earns you direct entries into the current high-performance giveaway. Precision engineered, community approved.
+                </p>
+</div>
+<div class="flex items-center gap-component-gap bg-surface p-4 rounded-lg border border-steel-border shadow-sm">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<div>
+<div class="font-label-caps text-label-caps text-text-dim mb-1">CURRENT MULTIPLIER</div>
+<div class="font-data-odometer text-data-odometer text-primary">2X ENTRIES</div>
+</div>
+</div>
+</header>
+<!-- Product Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Product Card 1 -->
+<article class="bg-surface border border-steel-border rounded-lg overflow-hidden flex flex-col group transition-all duration-300 redline-glow relative shadow-product hover:shadow-md">
+<div class="absolute top-4 left-4 z-10 bg-surface border border-primary px-3 py-1 rounded-DEFAULT shadow-sm">
+<span class="font-data-label text-data-label text-primary">BEST SELLER</span>
+</div>
+<div class="h-64 bg-surface-dim relative overflow-hidden flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-surface opacity-50 z-0"></div>
+<img alt="Stealth Phone Mount" class="object-cover w-full h-full z-10 rounded-DEFAULT opacity-90 group-hover:opacity-100 transition-opacity duration-300" data-alt="A sleek, matte black magnetic phone mount designed for a modern car interior. The mount is positioned on an authentic carbon fiber dashboard trim piece. Dramatic, top-down studio lighting highlights the precision machined aluminum details and subtle red anodized accents on the mount. The overall aesthetic is dark, premium, and technical, fitting a high-performance automotive tuning theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_cXs730Uz0Fgdm4rQ7NkVc27AhfONRtvbysiBJDCykIqPG_2orhUYUCHwpfPrHyX4QwrbEElGCZbIcDT5ywFUDCaChpRNtERwb1ZTLXU3lGDdWI21KXsR4IJ714VfswEyGlGqlji-gW4kTZD1GDrA0av_WRRSPTNtqjT5aBK5PempvO9l3WLRwatS6VjrY-VyixdPlrJusQP6c1DQ-JB5F2pX4-6kekqQAy6r0HD2jSBS360aN9-_">
+</div>
+<div class="p-6 flex flex-col flex-grow gap-4 border-t border-steel-border bg-surface z-20 relative">
+<h2 class="font-headline-lg text-headline-lg text-on-surface leading-tight font-bold">Stealth Magnetic Mount</h2>
+<div class="bg-steel-dim border border-steel-border rounded-DEFAULT p-3 flex justify-between items-center mt-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
+<span class="font-data-label text-data-label text-primary text-lg">70 ENTRIES</span>
+</div>
+<span class="font-data-label text-data-label text-primary bg-primary/10 px-2 py-1 rounded">2X</span>
+</div>
+</div>
+</article>
+<!-- Product Card 2 -->
+<article class="bg-surface border border-steel-border rounded-lg overflow-hidden flex flex-col group transition-all duration-300 redline-glow relative shadow-product hover:shadow-md">
+<div class="h-64 bg-surface-dim relative overflow-hidden flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-surface opacity-50 z-0"></div>
+<img alt="Ambient LED Kit" class="object-cover w-full h-full z-10 rounded-DEFAULT opacity-90 group-hover:opacity-100 transition-opacity duration-300" data-alt="A close-up shot of a dark car interior illuminated by sharp, neon red ambient LED strips running along the door panels and center console. The scene is shot at night, creating a moody 'Midnight Club' aesthetic. The deep carbon textures of the car's trim are visible in the low light, contrasting with the intense, precise glow of the LEDs. Premium technical photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBb6lqMVHOTzCm-vg9y6uKdQmude96dy9s5f3Kzav-mysmz_cZPTM02NpoGA5d4M8lpEEM41aY75UFam9sAu0NSwm_kkUPraBYg0Q6mOEssMcdKPxIy2YGwus-vtN37UeZ17K0PklMJWdzDwgSienJ43yPDGxd5N_LCihBY_65d4FyHEpDkaJLKEszrW7hvNxHhtg22IhvaiYzkoeRY7_G_D9Z3S65T2e7J5SpFK5ZQzoTMnSyi94ld">
+</div>
+<div class="p-6 flex flex-col flex-grow gap-4 border-t border-steel-border bg-surface z-20 relative">
+<h2 class="font-headline-lg text-headline-lg text-on-surface leading-tight font-bold">Redline Interior LED Kit</h2>
+<div class="bg-steel-dim border border-steel-border rounded-DEFAULT p-3 flex justify-between items-center mt-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
+<span class="font-data-label text-data-label text-primary text-lg">170 ENTRIES</span>
+</div>
+<span class="font-data-label text-data-label text-primary bg-primary/10 px-2 py-1 rounded">2X</span>
+</div>
+</div>
+</article>
+<!-- Product Card 3 -->
+<article class="bg-surface border border-steel-border rounded-lg overflow-hidden flex flex-col group transition-all duration-300 redline-glow relative shadow-product hover:shadow-md">
+<div class="h-64 bg-surface-dim relative overflow-hidden flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-surface opacity-50 z-0"></div>
+<img alt="Microfiber Pack" class="object-cover w-full h-full z-10 rounded-DEFAULT opacity-90 group-hover:opacity-100 transition-opacity duration-300" data-alt="A neatly stacked set of premium, dark grey microfiber detailing towels resting on a metallic diamond-plate workbench surface. Next to the towels is a matte black spray bottle with a subtle red logo. The lighting is harsh and directional, resembling a professional late-night auto shop environment. The image emphasizes the high quality and functional texture of the detailing gear." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL8GbYnRyAzjoWsWScY-6eOvW_zm6wZi86ScbXMQLc87WjnyijS3BgC3s1HzSqvsESqpXr5g8P7ZKLwlXhBdn74vTGDT91onVpOJMRzCxyn-areeExCgr8ymGPxvcoFvl0wjrgh8w-Cs3-ug0cnMUiQteUcwwBN1RNdm4lnjausmsNhSAuaz7LTPYfT8IVzhLPoSuHaLgSoo0MgyFEtwdtUZdWb5klnxeHFK9gZrKGpGlSUI-sd-t_">
+</div>
+<div class="p-6 flex flex-col flex-grow gap-4 border-t border-steel-border bg-surface z-20 relative">
+<h2 class="font-headline-lg text-headline-lg text-on-surface leading-tight font-bold">Pro Detailing Micro-Pack</h2>
+<div class="bg-steel-dim border border-steel-border rounded-DEFAULT p-3 flex justify-between items-center mt-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
+<span class="font-data-label text-data-label text-primary text-lg">50 ENTRIES</span>
+</div>
+<span class="font-data-label text-data-label text-primary bg-primary/10 px-2 py-1 rounded">2X</span>
+</div>
+</div>
+</article>
+<!-- Product Card 4 -->
+<article class="bg-surface border border-steel-border rounded-lg overflow-hidden flex flex-col group transition-all duration-300 redline-glow relative shadow-product hover:shadow-md">
+<div class="h-64 bg-surface-dim relative overflow-hidden flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-surface opacity-50 z-0"></div>
+<img alt="Carbon Fiber Phone Mount" class="object-cover w-full h-full z-10 rounded-DEFAULT opacity-90 group-hover:opacity-100 transition-opacity duration-300" data-alt="A premium carbon fiber phone mount attached to a sleek dashboard vent." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6F9MmJyPtssbiC3EVYfhYebBVe3Ls-y6JtBi9MRnx7B0gL3gPkpXuYfPH33zbjsXmB2xt3uXU6ljEM1OqTbZk1S_koglM5mWu5iWRwN3AUBfXBQIjZ21NbEcfSe8ciwoaP1Tbd3Z_2bLv93099g0PJvF5Rl7klbAN-_T2WEfnmyTpBI6zFgDKMI7Q_MNtkGU706i4is66SubAnszK7oGHerGLnJQeVzolQwOFhyeLwZ0VWlQHJQqS">
+</div>
+<div class="p-6 flex flex-col flex-grow gap-4 border-t border-steel-border bg-surface z-20 relative">
+<h2 class="font-headline-lg text-headline-lg text-on-surface leading-tight font-bold">Carbon Fiber Phone Mount</h2>
+<div class="bg-steel-dim border border-steel-border rounded-DEFAULT p-3 flex justify-between items-center mt-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
+<span class="font-data-label text-data-label text-primary text-lg">90 ENTRIES</span>
+</div>
+<span class="font-data-label text-data-label text-primary bg-primary/10 px-2 py-1 rounded">2X</span>
+</div>
+</div>
+</article>
+<!-- Product Card 5 -->
+<article class="bg-surface border border-steel-border rounded-lg overflow-hidden flex flex-col group transition-all duration-300 redline-glow relative shadow-product hover:shadow-md">
+<div class="h-64 bg-surface-dim relative overflow-hidden flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-surface opacity-50 z-0"></div>
+<img alt="Ambient Footwell Lighting" class="object-cover w-full h-full z-10 rounded-DEFAULT opacity-90 group-hover:opacity-100 transition-opacity duration-300" data-alt="Vibrant ambient lighting illuminating the footwell of a sports car." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAladn-O7T9xOe270g0nGg16clqZCYMRBg32sly0OvMfhtrfPqFDLb-Q41c6v6yzKs-yOKID_44Aj48ER2PutTtCLR-NfEp3Rcp4cSpu3f9KaFjfaHEjN127QyjPlcnTAieLmd52pPfvcR9Pc1gp3TpflA44VucqxAmA4lGna_6BGCpW6Onck3hpuyxKfYPDaiHZlLpV7AmZ4gmR08FAhPH11ah-uwpPuKff4uOK3KxnSUmxQAd-I-O">
+</div>
+<div class="p-6 flex flex-col flex-grow gap-4 border-t border-steel-border bg-surface z-20 relative">
+<h2 class="font-headline-lg text-headline-lg text-on-surface leading-tight font-bold">Ambient Footwell Lighting</h2>
+<div class="bg-steel-dim border border-steel-border rounded-DEFAULT p-3 flex justify-between items-center mt-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
+<span class="font-data-label text-data-label text-primary text-lg">130 ENTRIES</span>
+</div>
+<span class="font-data-label text-data-label text-primary bg-primary/10 px-2 py-1 rounded">2X</span>
+</div>
+</div>
+</article>
+<!-- Product Card 6 -->
+<article class="bg-surface border border-steel-border rounded-lg overflow-hidden flex flex-col group transition-all duration-300 redline-glow relative shadow-product hover:shadow-md">
+<div class="h-64 bg-surface-dim relative overflow-hidden flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-surface opacity-50 z-0"></div>
+<img alt="Performance Driving Gloves" class="object-cover w-full h-full z-10 rounded-DEFAULT opacity-90 group-hover:opacity-100 transition-opacity duration-300" data-alt="High quality leather driving gloves with red stitching." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9rCHugzh5ponII--ledQvzLTFjYuVKQTqduVqNAOiu2mWPptgxTN3BENwZYxvNW1dLuYCC1Wr6a3RScB4H1o1et4zTa_IPDjbOUlxERmdQ4nkOsqVClZrBlYSEE1CCf2o9Wr4dg0zNSzioVR-K6_TA_tqL2ZxZibC2nMe3k5gIjpN0rDtZOmkuXDRkd2HMwEg8in9BfClh_SkLTmoEainoU2u0z9MZsw4Sb3uMKqbopSTojApQwVE">
+</div>
+<div class="p-6 flex flex-col flex-grow gap-4 border-t border-steel-border bg-surface z-20 relative">
+<h2 class="font-headline-lg text-headline-lg text-on-surface leading-tight font-bold">Performance Driving Gloves</h2>
+<div class="bg-steel-dim border border-steel-border rounded-DEFAULT p-3 flex justify-between items-center mt-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
+<span class="font-data-label text-data-label text-primary text-lg">110 ENTRIES</span>
+</div>
+<span class="font-data-label text-data-label text-primary bg-primary/10 px-2 py-1 rounded">2X</span>
+</div>
+</div>
+</article>
+</section>
+<!-- Entry Info Banner -->
+<aside class="mt-8 bg-surface-dim border border-steel-border rounded-xl p-8 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-sm">
+<div class="absolute -right-20 -top-20 opacity-5 pointer-events-none text-primary">
+<span class="material-symbols-outlined text-[300px]" style="font-variation-settings: 'FILL' 1;">speed</span>
+</div>
+<div class="z-10 max-w-xl">
+<h3 class="font-headline-xl text-headline-xl text-on-surface mb-2 font-bold">MAXIMIZE YOUR CHANCES</h3>
+<p class="font-body-md text-body-md text-text-dim">
+                    Every Reville product purchase directly fuels the community and earns you mechanical entries into the grand prize draw. No hidden fees, just pure performance parts and a shot at the ultimate ride.
+                </p>
+</div>
+<div class="z-10 shrink-0">
+<button class="bg-primary text-on-primary font-label-caps text-label-caps px-8 py-4 rounded-DEFAULT hover:bg-primary-container transition-all duration-300 uppercase tracking-widest shadow-[0_4px_15px_rgba(255,77,46,0.3)]">
+                    VIEW ALL PRODUCTS
+                </button>
+</div>
+</aside>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="full-width bottom-0 border-t border-steel-border bg-carbon-bg dark:bg-carbon-bg"><div class="flex flex-col md:flex-row justify-between items-center px-grid-margin py-section-gap w-full max-w-screen-2xl mx-auto gap-component-gap"><div class="font-headline-lg text-headline-lg font-bold text-on-surface">REVILLE</div><div class="flex flex-wrap justify-center gap-6"><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Official Rules</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Privacy Policy</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Terms of Service</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Contact</a></div><div class="font-body-md text-body-md text-on-surface-variant text-center md:text-right text-sm max-w-md">© 2024 REVILLE TORONTO. ALL RIGHTS RESERVED. NO PURCHASE NECESSARY TO ENTER.</div></div></footer>
+
+
+</body></html>

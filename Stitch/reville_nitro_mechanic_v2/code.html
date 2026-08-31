@@ -1,0 +1,470 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>REVILLE - Win the BMW M850i</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#ffdad6",
+                        "inverse-surface": "#fbdcd6",
+                        "on-surface": "#fbdcd6",
+                        "on-background": "#fbdcd6",
+                        "tertiary": "#64d4fc",
+                        "secondary": "#c2c7cc",
+                        "inverse-on-surface": "#3f2c28",
+                        "secondary-container": "#42474c",
+                        "surface-container-low": "#281714",
+                        "on-tertiary-container": "#002e3c",
+                        "on-secondary-container": "#b1b6bb",
+                        "steel-panel-alt": "#1D2025",
+                        "surface-container-high": "#382622",
+                        "secondary-fixed": "#dee3e8",
+                        "tertiary-fixed": "#baeaff",
+                        "steel-panel": "#16181C",
+                        "carbon-bg": "#0A0B0D",
+                        "on-tertiary-fixed-variant": "#004d62",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#171c20",
+                        "outline": "#ac8982",
+                        "surface-tint": "#ffb4a5",
+                        "primary-fixed": "#ffdad3",
+                        "surface-container-lowest": "#190a08",
+                        "background": "#1f0f0c",
+                        "on-primary-fixed-variant": "#8e1300",
+                        "error-container": "#93000a",
+                        "primary-container": "#ff4d2e",
+                        "primary-fixed-dim": "#ffb4a5",
+                        "on-secondary-fixed-variant": "#42474c",
+                        "primary": "#ff4d2e",
+                        "on-primary": "#650a00",
+                        "steel-dim": "#22252A",
+                        "secondary-fixed-dim": "#c2c7cc",
+                        "text-dim": "#9BA0A8",
+                        "surface-container-highest": "#43302c",
+                        "surface": "#1f0f0c",
+                        "on-surface-variant": "#e5beb6",
+                        "tertiary-container": "#0e9dc3",
+                        "outline-variant": "#5c403a",
+                        "on-tertiary": "#003544",
+                        "error": "#ffb4ab",
+                        "surface-variant": "#43302c",
+                        "tertiary-fixed-dim": "#64d4fc",
+                        "surface-bright": "#483531",
+                        "steel-border": "#3A3F47",
+                        "on-tertiary-fixed": "#001f29",
+                        "on-primary-container": "#ffffff",
+                        "on-secondary": "#2c3135",
+                        "on-primary-fixed": "#3f0400",
+                        "surface-dim": "#1f0f0c",
+                        "inverse-primary": "#ba1b00",
+                        "surface-container": "#2c1b18"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "grid-margin": "2rem",
+                        "section-gap": "5rem",
+                        "gutter": "1.5rem",
+                        "component-gap": "1rem"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Oswald"],
+                        "headline-lg": ["Oswald"],
+                        "label-caps": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Oswald"],
+                        "data-label": ["JetBrains Mono"],
+                        "data-odometer": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Oswald"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["48px", { "lineHeight": "1.2", "letterSpacing": "0.04em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "0.04em", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.12em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "data-label": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.1em", "fontWeight": "500" }],
+                        "data-odometer": ["44px", { "lineHeight": "1", "letterSpacing": "-0.05em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "display-lg": ["80px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;family=JetBrains+Mono:wght@500;700&amp;family=Oswald:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .bg-spec-grid {
+            background-image: linear-gradient(to right, #3A3F47 1px, transparent 1px), linear-gradient(to bottom, #3A3F47 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center top;
+        }
+        .odometer-digit {
+            background: linear-gradient(180deg, #16181C 0%, #1D2025 50%, #16181C 100%);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), inset 0 -1px 2px rgba(255,255,255,0.05);
+        }
+        @keyframes gauge-fill {
+            0% { stroke-dashoffset: 125.6; }
+            100% { stroke-dashoffset: 35; } /* Approx 75% fill */
+        }
+        .animate-gauge {
+            stroke-dasharray: 125.6;
+            animation: gauge-fill 2s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+        }
+        
+        /* Wheel Slider Styling */
+        .wheel-container {
+            background: linear-gradient(90deg, #0A0B0D 0%, #1D2025 50%, #0A0B0D 100%);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 0 0 1px #3A3F47;
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        .wheel-track {
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 8px, #3A3F47 8px, #3A3F47 10px);
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        input[type=range].wheel-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            cursor: ns-resize;
+            margin: 0;
+            padding: 0;
+        }
+        input[type=range].wheel-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 30px;
+            width: 140%;
+            margin-left: -20%;
+            background: #ff4d2e;
+            border-radius: 2px;
+            box-shadow: 0 0 15px rgba(255, 77, 46, 0.8), inset 0 0 5px rgba(0,0,0,0.5);
+            border: 2px solid #0A0B0D;
+        }
+        
+        /* Glass/Carbon Texture for Nitro Bar */
+        .glass-texture {
+            background-image: linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.05) 75%, transparent 75%, transparent);
+            background-size: 10px 10px;
+        }
+    </style>
+</head>
+<body class="bg-carbon-bg text-on-surface font-body-md min-h-screen flex flex-col antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="docked full-width top-0 sticky z-50 bg-carbon-bg dark:bg-carbon-bg border-b border-steel-border">
+<div class="flex justify-between items-center px-grid-margin py-4 w-full max-w-screen-2xl mx-auto">
+<div class="font-headline-xl text-headline-xl italic font-black text-primary uppercase tracking-tighter">
+            REVILLE
+        </div>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-label-caps text-label-caps text-primary font-bold border-b-2 border-primary pb-1 hover:text-primary transition-all duration-300 scale-95 transition-transform duration-150" href="#">GIVEAWAY</a>
+<a class="font-label-caps text-label-caps text-on-secondary-container font-medium hover:text-primary transition-colors transition-all duration-300" href="#">NURBU</a>
+<a class="font-label-caps text-label-caps text-on-secondary-container font-medium hover:text-primary transition-colors transition-all duration-300" href="#">MERCH</a>
+<a class="font-label-caps text-label-caps text-on-secondary-container font-medium hover:text-primary transition-colors transition-all duration-300" href="#">PROFILE</a>
+</div>
+<button class="hidden md:flex items-center justify-center bg-primary-container text-on-primary-container font-data-label text-data-label rounded-DEFAULT px-6 py-3 uppercase tracking-widest hover:opacity-90 transition-opacity border-t-2 border-primary-fixed-dim">
+            GET ENTRIES
+        </button>
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">menu</span>
+</button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col gap-section-gap">
+<!-- Hero Section -->
+<section class="relative w-full min-h-[90vh] flex flex-col items-center justify-center overflow-hidden border-b border-steel-border">
+<!-- Cinematic Background -->
+<div class="absolute inset-0 z-0 bg-carbon-bg">
+<div class="absolute inset-0 bg-gradient-to-b from-carbon-bg/90 via-carbon-bg/60 to-carbon-bg z-10 pointer-events-none"></div>
+<img alt="BMW M850i at night" class="w-full h-full object-cover object-center opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKa3fNI7W-045_Nie-k3lFJ3MUs_O6Q7q9iQKRHPKwB6z3Wvg8UqEEhXJZ-__Cq451B7A-WEaSXNv8zF9J6DPARKLsAggL39TU9-DIW82dfMgUzviflLMFybkqF5_3-xWB_shdUGI5aNwqtlf_fZz-HqzTuqWppo92IfWvkZfLX-iPEBA1eQFoY8prOjiP6ghaicWZ5T7sbP1tMNPIf50vswK7rJBh8a5XUwFN-fM5iHCHP5pPLe-cBuW3zKFP-Idk7A">
+</div>
+<div class="relative z-10 flex flex-col items-center text-center px-grid-margin w-full max-w-screen-xl mx-auto pt-20 pb-10">
+<!-- Brand Submark / Pre-title -->
+<div class="mb-6 font-data-label text-data-label text-primary tracking-[0.2em] uppercase border border-steel-border px-4 py-1 bg-steel-panel/50 backdrop-blur-sm rounded-DEFAULT">
+                Current Sweepstakes
+            </div>
+<!-- Massive Headline -->
+<h1 class="font-display-lg text-display-lg text-on-surface uppercase mb-4 max-w-4xl drop-shadow-2xl">
+                WIN THE BMW M850i
+            </h1>
+<!-- Tagline -->
+<p class="font-headline-lg text-headline-lg text-on-surface-variant mb-16 max-w-2xl">
+                ~$100K CAD Prize Value. Buy in. Earn entries. Win the keys.
+            </p>
+<!-- Technical Odometer & Gauge -->
+<div class="relative w-72 h-40 mb-12 flex flex-col items-center justify-end">
+<!-- Semi-circle Gauge SVG -->
+<svg class="absolute top-0 w-full h-full" preserveAspectRatio="xMidYMax meet" viewBox="0 0 100 50">
+<path d="M 10 45 A 40 40 0 0 1 90 45" fill="none" stroke="#22252A" stroke-linecap="round" stroke-width="4"></path>
+<path class="animate-gauge" d="M 10 45 A 40 40 0 0 1 90 45" fill="none" stroke="#ff4d2e" stroke-linecap="round" stroke-width="4"></path>
+<circle class="shadow-[0_0_10px_#ff4d2e]" cx="78" cy="20" fill="#ff4d2e" r="3"></circle>
+</svg>
+<!-- Odometer Display -->
+<div class="relative z-10 flex flex-col items-center mb-2">
+<div class="flex gap-[2px] p-1 bg-steel-panel border border-steel-border rounded-lg shadow-2xl" id="hero-odometer">
+<span class="odometer-digit font-data-odometer text-data-odometer text-on-surface px-2 py-1 border-y border-steel-border rounded-sm">3</span>
+<span class="odometer-digit font-data-odometer text-data-odometer text-on-surface px-2 py-1 border-y border-steel-border rounded-sm">4</span>
+<span class="odometer-digit font-data-odometer text-data-odometer text-on-surface px-2 py-1 border-y border-steel-border rounded-sm">2</span>
+<span class="font-data-odometer text-data-odometer text-steel-border self-end pb-1 px-1">,</span>
+<span class="odometer-digit font-data-odometer text-data-odometer text-primary-container px-2 py-1 border-y border-steel-border rounded-sm">8</span>
+<span class="odometer-digit font-data-odometer text-data-odometer text-primary-container px-2 py-1 border-y border-steel-border rounded-sm">5</span>
+<span class="odometer-digit font-data-odometer text-data-odometer text-primary-container px-2 py-1 border-y border-steel-border rounded-sm">0</span>
+</div>
+<span class="mt-3 font-label-caps text-label-caps text-text-dim tracking-[0.15em]">TOTAL ENTRIES</span>
+</div>
+</div>
+<!-- Primary CTA -->
+<button class="group relative bg-primary-container text-on-primary-container font-data-label text-data-label text-lg uppercase px-16 py-5 rounded-DEFAULT overflow-hidden transition-transform hover:-translate-y-1">
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+<div class="absolute top-0 left-0 w-full h-[2px] bg-primary-fixed-dim opacity-50"></div>
+<span class="relative z-10 font-bold tracking-widest flex items-center gap-2">
+                    GET ENTRIES NOW
+                    <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
+</span>
+</button>
+</div>
+</section>
+<!-- How It Works & Specs (Bento Grid) -->
+<section class="px-grid-margin w-full max-w-screen-2xl mx-auto py-10">
+<div class="flex items-center gap-4 mb-10">
+<h2 class="font-headline-lg text-headline-lg text-on-surface uppercase">The Mechanics</h2>
+<div class="flex-grow h-[1px] bg-steel-border"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter auto-rows-[minmax(250px,auto)]">
+<!-- Nitro Calculator Panel -->
+<div class="md:col-span-8 bg-steel-panel border border-steel-border rounded-lg relative overflow-hidden flex flex-col p-8 bg-spec-grid">
+<div class="absolute top-0 left-0 w-full h-[2px] bg-primary-container"></div>
+<!-- Formula Section Added Here -->
+<div class="mb-8 border-b border-steel-border/50 pb-8">
+<div class="font-data-label text-data-label text-primary-container mb-2 uppercase">Formula</div>
+<h3 class="font-headline-xl text-headline-xl text-on-surface mb-4">PRICE × MULTIPLIER = ENTRIES</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+                        Purchase digital products, apparel, or specialized services to accumulate entries. Look for high-multiplier items to maximize your chances of holding the keys. Higher spend unlocks higher multipliers (1.5x up to 2.5x).
+                    </p>
+</div>
+<div class="mb-6">
+<div class="font-data-label text-data-label text-primary-container mb-2 uppercase">Nitro Entry Calculator</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Slide the wheel to see how your spend translates to entries.</p>
+</div>
+<!-- Calculator Interface -->
+<div class="flex flex-col md:flex-row gap-8 items-center bg-carbon-bg border border-steel-border p-6 rounded-DEFAULT"><!-- Vertical Racing Slider -->
+<div class="flex flex-col items-center gap-4 h-80 group">
+    <span class="font-data-label text-data-label text-on-surface-variant uppercase tracking-widest">$2,500</span>
+    <div class="relative w-12 h-full bg-steel-panel border-2 border-steel-dim rounded-sm shadow-[inset_0_0_15px_rgba(0,0,0,1)] overflow-hidden">
+        <!-- Track Ticks -->
+        <div class="absolute inset-0 flex flex-col justify-between py-4 pointer-events-none opacity-30">
+            <div class="h-[1px] w-full bg-steel-border"></div><div class="h-[1px] w-full bg-steel-border"></div><div class="h-[1px] w-full bg-steel-border"></div><div class="h-[1px] w-full bg-steel-border"></div><div class="h-[1px] w-full bg-steel-border"></div><div class="h-[1px] w-full bg-steel-border"></div><div class="h-[1px] w-full bg-steel-border"></div><div class="h-[1px] w-full bg-steel-border"></div><div class="h-[1px] w-full bg-steel-border"></div><div class="h-[1px] w-full bg-steel-border"></div>
+        </div>
+        <!-- The Slider -->
+        <input type="range" id="spendSlider" min="25" max="2500" step="25" value="500" orient="vertical" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30" style="appearance: slider-vertical; -webkit-appearance: slider-vertical;">
+        <!-- Visual Handle -->
+        <div id="sliderHandle" class="absolute left-0 w-full h-8 bg-primary-container border-y-2 border-white/20 shadow-[0_0_15px_rgba(255,77,46,0.5)] z-20 pointer-events-none transition-all duration-75" style="bottom: 20%;">
+            <div class="w-full h-full flex flex-col justify-center items-center gap-1">
+                <div class="w-6 h-[1px] bg-white/40"></div>
+                <div class="w-6 h-[1px] bg-white/40"></div>
+            </div>
+        </div>
+    </div>
+    <span class="font-data-label text-data-label text-on-surface-variant uppercase tracking-widest">$25</span>
+</div>
+
+<!-- Display & Nitro Bar -->
+<div class="flex-grow flex flex-col justify-center w-full">
+    <div class="flex justify-between items-end mb-6">
+        <div>
+            <div class="font-label-caps text-label-caps text-text-dim mb-1">YOUR SPEND</div>
+            <div class="font-data-odometer text-data-odometer text-on-surface text-3xl">$<span id="spendDisplay" class="">500</span></div>
+        </div>
+        <div class="text-right">
+            <div class="font-label-caps text-label-caps text-primary-container mb-1">MULTIPLIER TIER</div>
+            <div class="font-data-odometer text-data-odometer text-primary-container text-3xl"><span id="multiplierDisplay" class="">1.5</span>x</div>
+        </div>
+    </div>
+
+    <!-- Technical Nitro Bar -->
+    <div class="relative w-full h-12 bg-steel-panel border-4 border-steel-dim rounded-full overflow-hidden mb-2 shadow-[inset_0_4px_8px_rgba(0,0,0,0.8)]">
+        <div id="nitroFill" class="absolute top-0 left-0 h-full transition-all duration-300 ease-out glass-texture" style="width: 20%; background-color: #4CC9F0;"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
+        <div id="carIcon" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 drop-shadow-md z-10 transition-all duration-300">
+            <span class="material-symbols-outlined text-2xl">directions_car</span>
+        </div>
+    </div>
+
+    <div class="flex justify-between font-data-label text-[10px] text-text-dim mb-8 px-2">
+        <span class="">$25</span><span class="">$1000</span><span class="">$2000</span><span class="">$2500</span>
+    </div>
+
+    <!-- Result Odometer -->
+    <div class="flex flex-col items-center">
+        <div class="font-label-caps text-label-caps text-on-surface-variant tracking-[0.15em] mb-2">YOU EARN</div>
+        <div class="flex gap-[2px] p-1 bg-steel-panel border border-steel-border rounded-lg shadow-2xl" id="calc-odometer">
+            <span class="odometer-digit font-data-odometer text-data-odometer text-primary-container px-2 py-1 border-y border-steel-border rounded-sm calc-digit">0</span>
+            <span class="odometer-digit font-data-odometer text-data-odometer text-primary-container px-2 py-1 border-y border-steel-border rounded-sm calc-digit">7</span>
+            <span class="odometer-digit font-data-odometer text-data-odometer text-primary-container px-2 py-1 border-y border-steel-border rounded-sm calc-digit">5</span>
+            <span class="odometer-digit font-data-odometer text-data-odometer text-primary-container px-2 py-1 border-y border-steel-border rounded-sm calc-digit">0</span>
+        </div>
+        <div class="font-data-label text-data-label text-primary-container mt-2">ENTRIES</div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const slider = document.getElementById('spendSlider');
+        const handle = document.getElementById('sliderHandle');
+        const spendDisplay = document.getElementById('spendDisplay');
+        const multiplierDisplay = document.getElementById('multiplierDisplay');
+        const nitroFill = document.getElementById('nitroFill');
+        const carIcon = document.getElementById('carIcon');
+        const digits = document.querySelectorAll('.calc-digit');
+
+        function update() {
+            const val = parseInt(slider.value);
+            const min = parseInt(slider.min);
+            const max = parseInt(slider.max);
+            const percent = ((val - min) / (max - min)) * 100;
+            
+            // Update Handle Position
+            handle.style.bottom = `calc(${percent}% - 16px)`;
+            spendDisplay.textContent = val.toLocaleString();
+
+            // Multiplier Logic: 1.5x at $25 to 2.5x at $2500
+            const multiplier = 1.5 + (val / 2500);
+            multiplierDisplay.textContent = multiplier.toFixed(2);
+
+            // Nitro Bar Color & Fill
+            let color = '#4CC9F0';
+            if (val > 500) color = '#F77F00';
+            if (val > 1500) color = '#FF4D2E';
+            
+            nitroFill.style.width = `${percent}%`;
+            nitroFill.style.backgroundColor = color;
+
+            // Max Level Effects
+            if (val >= 2500) {
+                carIcon.classList.add('scale-125', 'text-primary');
+                carIcon.style.filter = 'drop-shadow(0 0 8px #FF4D2E)';
+            } else {
+                carIcon.classList.remove('scale-125', 'text-primary');
+                carIcon.style.filter = 'none';
+            }
+
+            // Odometer Update
+            const entries = Math.floor(val * multiplier);
+            const entryStr = entries.toString().padStart(4, '0');
+            digits.forEach((d, i) => {
+                if (entryStr[i]) d.textContent = entryStr[i];
+            });
+        }
+
+        slider.addEventListener('input', update);
+        update();
+    })();
+</script></div>
+<script>
+                    const slider = document.getElementById('spendSlider');
+                    const spendDisplay = document.getElementById('spendDisplay');
+                    const multiplierDisplay = document.getElementById('multiplierDisplay');
+                    const nitroFill = document.getElementById('nitroFill');
+                    const digits = document.querySelectorAll('.calc-digit');
+
+                    function updateCalculator() {
+                        const spend = parseInt(slider.value);
+                        spendDisplay.textContent = spend;
+
+                        let multiplier = 1.5;
+                        let tierColor = '#3b82f6'; // Low tier - Blue
+
+                        if (spend >= 1000) {
+                            multiplier = 2.0;
+                            tierColor = '#f97316'; // Medium tier - Orange
+                        }
+                        if (spend >= 2000) {
+                            multiplier = 2.5;
+                            tierColor = '#ef4444'; // High tier - Red
+                        }
+
+                        multiplierDisplay.textContent = multiplier.toFixed(1);
+                        nitroFill.style.backgroundColor = tierColor;
+
+                        const entries = Math.floor(spend * multiplier);
+                        
+                        // Update Odometer
+                        const entryStr = entries.toString().padStart(4, '0');
+                        for (let i = 0; i < 4; i++) {
+                            if (digits[i]) {
+                                digits[i].textContent = entryStr[i];
+                            }
+                        }
+
+                        // Update Bar (max approx 6250 entries for $2500 @ 2.5x)
+                        const maxEntries = 6250;
+                        const fillPercentage = Math.min((entries / maxEntries) * 100, 100);
+                        nitroFill.style.width = `${fillPercentage}%`;
+                    }
+
+                    slider.addEventListener('input', updateCalculator);
+                    updateCalculator(); // Initial update
+                </script>
+</div>
+<!-- Specs Panel -->
+<div class="md:col-span-4 bg-steel-panel border border-steel-border rounded-lg p-8 flex flex-col">
+<div class="font-data-label text-data-label text-text-dim mb-6 uppercase border-b border-steel-border pb-2">Vehicle Specs</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-6">BMW M850i xDrive</h3>
+<div class="flex flex-col gap-4 flex-grow justify-center">
+<div class="flex justify-between items-end border-b border-steel-border/50 pb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Engine</span>
+<span class="font-data-label text-data-label text-primary text-lg">4.4L Twin-Turbo V8</span>
+</div>
+<div class="flex justify-between items-end border-b border-steel-border/50 pb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Power</span>
+<span class="font-data-label text-data-label text-on-surface text-lg">523 HP / 553 lb-ft</span>
+</div>
+<div class="flex justify-between items-end border-b border-steel-border/50 pb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">0-60 mph</span>
+<span class="font-data-label text-data-label text-on-surface text-lg">3.6 Seconds</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="full-width bottom-0 border-t border-steel-border bg-carbon-bg dark:bg-carbon-bg">
+<div class="flex flex-col md:flex-row justify-between items-center px-grid-margin py-section-gap w-full max-w-screen-2xl mx-auto gap-component-gap">
+<div class="font-headline-lg text-headline-lg font-bold text-on-surface">
+            REVILLE
+        </div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Official Rules</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Privacy Policy</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Terms of Service</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Contact</a>
+</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-center md:text-right text-sm max-w-md">
+            © 2024 REVILLE TORONTO. ALL RIGHTS RESERVED. NO PURCHASE NECESSARY TO ENTER.
+        </div>
+</div>
+</footer>
+
+
+</body></html>

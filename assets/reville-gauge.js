@@ -15,23 +15,24 @@ function easeOutCubic(t) {
  *
  * @typedef {object} Refs
  * @property {SVGPathElement} arc - The gauge's progress arc.
- * @property {HTMLElement} counter - The numeric entry-count readout.
+ * @property {HTMLElement[]} digits - The odometer's individual digit tiles, left to right.
  *
  * @extends Component<Refs>
  */
 class ReveilleGaugeComponent extends Component {
-  requiredRefs = ['arc', 'counter'];
+  requiredRefs = ['arc', 'digits'];
 
   connectedCallback() {
     super.connectedCallback();
 
     const target = Number(this.dataset.current) || 0;
     const finalOffset = this.refs.arc.style.strokeDashoffset;
+    const digitCount = this.refs.digits.length;
 
     if (prefersReducedMotion()) return;
 
     this.refs.arc.style.strokeDashoffset = '1';
-    this.refs.counter.textContent = '0';
+    this.#paintDigits(0, digitCount);
 
     let startTime = null;
 
@@ -41,18 +42,30 @@ class ReveilleGaugeComponent extends Component {
       const progress = Math.min(elapsed / REVEAL_DURATION_MS, 1);
       const eased = easeOutCubic(progress);
 
-      this.refs.counter.textContent = Math.round(target * eased).toLocaleString('en-US');
+      this.#paintDigits(Math.round(target * eased), digitCount);
       this.refs.arc.style.strokeDashoffset = String(1 - (1 - Number(finalOffset)) * eased);
 
       if (progress < 1) {
         requestAnimationFrame(step);
       } else {
-        this.refs.counter.textContent = target.toLocaleString('en-US');
+        this.#paintDigits(target, digitCount);
         this.refs.arc.style.strokeDashoffset = finalOffset;
       }
     };
 
     requestAnimationFrame(step);
+  }
+
+  /**
+   * @param {number} value
+   * @param {number} digitCount
+   */
+  #paintDigits(value, digitCount) {
+    const padded = String(Math.max(0, value)).padStart(digitCount, '0').slice(-digitCount);
+
+    this.refs.digits.forEach((digit, i) => {
+      digit.textContent = padded[i] ?? '0';
+    });
   }
 }
 

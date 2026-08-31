@@ -1,0 +1,144 @@
+{% comment %}
+  Reville footer — matches Stitch "reville_nitro_mechanic_v2".
+  Wordmark + policy links + copyright / no-purchase-necessary line.
+  The exact Official Rules / NPN legal wording is still TBD (Reference/CLAUDE.md
+  "Legal — Don't Guess"). The default line below is the approved mockup's
+  boilerplate; replace with counsel-reviewed copy before any public launch.
+{% endcomment %}
+
+{% liquid
+  assign menu = linklists[section.settings.menu]
+  assign year = 'now' | date: '%Y'
+  assign year_token = 'YEAR'
+  assign legal_text = section.settings.legal_text | replace: year_token, year
+%}
+
+<footer
+  class="reville-footer"
+  style="
+    --rf-carbon: {{ settings.color_palette.background }};
+    --rf-border: {{ settings.color_palette.color3 }};
+    --rf-text-dim: {{ settings.color_palette.color5 }};
+    --rf-redline: {{ settings.color_palette.color6 }};
+  "
+>
+  <div class="reville-footer__inner">
+    <div class="reville-footer__wordmark">
+      {{ section.settings.wordmark_text | default: shop.name }}
+    </div>
+
+    {% if menu.links.size > 0 %}
+      <nav class="reville-footer__links" aria-label="Footer">
+        {% for link in menu.links %}
+          <a href="{{ link.url }}" class="reville-footer__link">{{ link.title }}</a>
+        {% endfor %}
+      </nav>
+    {% endif %}
+
+    {% if section.settings.legal_text != blank %}
+      <p class="reville-footer__legal">{{ legal_text }}</p>
+    {% endif %}
+  </div>
+</footer>
+
+{% stylesheet %}
+  .reville-footer {
+    display: block;
+    background: var(--rf-carbon);
+    border-block-start: 1px solid var(--rf-border);
+  }
+
+  .reville-footer__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 1536px;
+    margin-inline: auto;
+    padding-inline: var(--spacing-8, 2rem);
+    padding-block: 64px;
+    text-align: center;
+  }
+
+  .reville-footer__wordmark {
+    font-family: var(--font-heading--family);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+  }
+
+  .reville-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .reville-footer__link {
+    font-family: var(--font-body--family);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--rf-text-dim);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .reville-footer__link:hover {
+    color: var(--rf-redline);
+  }
+
+  .reville-footer__legal {
+    max-width: 32rem;
+    margin: 0;
+    font-family: var(--font-body--family);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--rf-text-dim);
+  }
+
+  @media screen and (min-width: 990px) {
+    .reville-footer__inner {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+    }
+
+    .reville-footer__legal {
+      text-align: right;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Reville Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "wordmark_text",
+      "label": "Wordmark",
+      "default": "REVILLE"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "footer"
+    },
+    {
+      "type": "textarea",
+      "id": "legal_text",
+      "label": "Legal / copyright line",
+      "default": "© YEAR REVILLE TORONTO. ALL RIGHTS RESERVED. NO PURCHASE NECESSARY TO ENTER.",
+      "info": "TBD — placeholder boilerplate. Use counsel-reviewed NPN wording before launch. The token YEAR is replaced with the current year."
+    }
+  ],
+  "enabled_on": {
+    "groups": ["footer"]
+  }
+}
+{% endschema %}

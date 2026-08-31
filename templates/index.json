@@ -15,7 +15,7 @@
         "cta": {
           "type": "button",
           "settings": {
-            "label": "Enter Now",
+            "label": "Get Entries Now",
             "style_class": "button-custom",
             "custom_button_background": "#FF4D2E",
             "custom_button_text": "#0A0B0D",
@@ -25,11 +25,37 @@
       },
       "block_order": ["cta"],
       "settings": {
-        "wordmark_text": "REVILLE",
+        "eyebrow_text": "Current Sweepstakes",
+        "headline": "Win the BMW M850i",
         "tagline": "Buy in. Earn entries. Win the keys.",
         "entry_goal": 340000
       }
+    },
+    "reville_mechanics": {
+      "type": "reville-mechanics",
+      "blocks": {
+        "engine": {
+          "type": "_reville-spec-row",
+          "settings": { "label": "Engine", "value": "4.4L Twin-Turbo V8" }
+        },
+        "power": {
+          "type": "_reville-spec-row",
+          "settings": { "label": "Power", "value": "523 HP / 553 lb-ft" }
+        },
+        "zero-sixty": {
+          "type": "_reville-spec-row",
+          "settings": { "label": "0-60 mph", "value": "3.6 Seconds" }
+        }
+      },
+      "block_order": ["engine", "power", "zero-sixty"],
+      "settings": {
+        "heading": "The Mechanics",
+        "formula_eyebrow": "Formula",
+        "formula_heading": "Price × Multiplier = Entries",
+        "vehicle_name": "BMW M850i xDrive",
+        "specs_label": "Vehicle Specs"
+      }
     }
   },
-  "order": ["reville_hero"]
+  "order": ["reville_hero", "reville_mechanics"]
 }

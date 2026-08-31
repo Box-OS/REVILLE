@@ -1,0 +1,67 @@
+{% doc %}
+  A single label/value row in the Reville Mechanics section's vehicle specs panel.
+{% enddoc %}
+
+<div
+  class="reville-spec-row"
+  style="
+    --reville-spec-row-color3-rgb: {{ settings.color_palette.color3.rgb }};
+    --reville-spec-row-color5: {{ settings.color_palette.color5 }};
+  "
+  {{ block.shopify_attributes }}
+>
+  <span class="reville-spec-row__label">{{ block.settings.label }}</span>
+  <span class="reville-spec-row__value">{{ block.settings.value }}</span>
+</div>
+
+{% stylesheet %}
+  .reville-spec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+    padding-block-end: 8px;
+    border-block-end: 1px solid rgba(var(--reville-spec-row-color3-rgb), 0.5);
+  }
+
+  .reville-spec-row__label {
+    font-family: var(--font-body--family);
+    font-size: 0.75rem;
+    letter-spacing: var(--letter-spacing-md);
+    text-transform: uppercase;
+    color: var(--reville-spec-row-color5);
+  }
+
+  .reville-spec-row__value {
+    font-family: var(--font-mono--family);
+    font-size: 1.125rem;
+    color: var(--color-foreground);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Spec row",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Engine"
+    },
+    {
+      "type": "text",
+      "id": "value",
+      "label": "Value",
+      "default": "4.4L Twin-Turbo V8"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Spec row",
+      "category": "t:categories.layout"
+    }
+  ]
+}
+{% endschema %}

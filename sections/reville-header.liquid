@@ -1,0 +1,299 @@
+{% comment %}
+  Reville top nav — matches Stitch "reville_nitro_mechanic_v2".
+  REVILLE wordmark (redline, italic, condensed) + menu + GET ENTRIES button.
+  Replaces Horizon's stock header for the dev theme; no cart drawer / predictive
+  search / localization here by design (the mockup has none).
+{% endcomment %}
+
+{% liquid
+  assign menu = linklists[section.settings.menu]
+%}
+
+<reville-header
+  class="reville-header"
+  style="
+    --rh-carbon: {{ settings.color_palette.background }};
+    --rh-panel: {{ settings.color_palette.color1 }};
+    --rh-panel-alt: {{ settings.color_palette.color2 }};
+    --rh-border: {{ settings.color_palette.color3 }};
+    --rh-text-dim: {{ settings.color_palette.color5 }};
+    --rh-redline: {{ settings.color_palette.color6 }};
+    --rh-redline-rgb: {{ settings.color_palette.color6.rgb }};
+  "
+>
+  <div class="reville-header__bar">
+    <a href="{{ routes.root_url }}" class="reville-header__wordmark">
+      {{ section.settings.wordmark_text | default: shop.name }}
+    </a>
+
+    <nav class="reville-header__nav" aria-label="Primary">
+      {% for link in menu.links %}
+        <a
+          href="{{ link.url }}"
+          class="reville-header__link{% if link.current or link.child_active %} is-active{% endif %}"
+          {% if link.current %}aria-current="page"{% endif %}
+        >
+          {{ link.title }}
+        </a>
+      {% endfor %}
+    </nav>
+
+    <div class="reville-header__actions">
+      {% if section.settings.cta_label != blank %}
+        <a
+          href="{{ section.settings.cta_link | default: routes.root_url }}"
+          class="reville-header__cta"
+        >
+          {{ section.settings.cta_label }}
+        </a>
+      {% endif %}
+
+      <button
+        type="button"
+        class="reville-header__toggle"
+        aria-expanded="false"
+        aria-controls="reville-header-drawer-{{ section.id }}"
+        aria-label="Menu"
+        on:click="/toggle"
+      >
+        <span class="reville-header__toggle-bar"></span>
+        <span class="reville-header__toggle-bar"></span>
+        <span class="reville-header__toggle-bar"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="reville-header__drawer" id="reville-header-drawer-{{ section.id }}" hidden>
+    {% for link in menu.links %}
+      <a
+        href="{{ link.url }}"
+        class="reville-header__drawer-link{% if link.current or link.child_active %} is-active{% endif %}"
+      >
+        {{ link.title }}
+      </a>
+    {% endfor %}
+    {% if section.settings.cta_label != blank %}
+      <a
+        href="{{ section.settings.cta_link | default: routes.root_url }}"
+        class="reville-header__cta reville-header__cta--block"
+      >
+        {{ section.settings.cta_label }}
+      </a>
+    {% endif %}
+  </div>
+</reville-header>
+
+{% stylesheet %}
+  .reville-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: block;
+    background: var(--rh-carbon);
+    border-block-end: 1px solid var(--rh-border);
+  }
+
+  .reville-header__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    max-width: 1536px;
+    margin-inline: auto;
+    padding-inline: var(--spacing-8, 2rem);
+    padding-block: 16px;
+  }
+
+  .reville-header__wordmark {
+    font-family: var(--font-heading--family);
+    font-weight: 700;
+    font-style: italic;
+    font-size: clamp(1.5rem, 3vw, 1.875rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    color: var(--rh-redline);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .reville-header__nav {
+    display: none;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .reville-header__link {
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--rh-text-dim);
+    text-decoration: none;
+    padding-block-end: 4px;
+    border-block-end: 2px solid transparent;
+    transition: color 0.2s ease;
+  }
+
+  .reville-header__link:hover {
+    color: var(--rh-redline);
+  }
+
+  .reville-header__link.is-active {
+    color: var(--rh-redline);
+    font-weight: 700;
+    border-block-end-color: var(--rh-redline);
+  }
+
+  .reville-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .reville-header__cta {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono--family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--rh-redline);
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: var(--style-border-radius-buttons-outset, 0.25rem);
+    border-block-start: 2px solid rgba(255, 255, 255, 0.35);
+    transition: opacity 0.2s ease;
+  }
+
+  .reville-header__cta:hover {
+    opacity: 0.9;
+  }
+
+  .reville-header__toggle {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .reville-header__toggle-bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--rh-redline);
+  }
+
+  .reville-header__drawer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px var(--spacing-8, 2rem) 24px;
+    border-block-start: 1px solid var(--rh-border);
+    background: var(--rh-panel);
+  }
+
+  .reville-header__drawer[hidden] {
+    display: none;
+  }
+
+  .reville-header__drawer-link {
+    font-family: var(--font-body--family);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--rh-text-dim);
+    text-decoration: none;
+    padding-block: 12px;
+    border-block-end: 1px solid var(--rh-border);
+  }
+
+  .reville-header__drawer-link.is-active {
+    color: var(--rh-redline);
+  }
+
+  .reville-header__cta--block {
+    display: flex;
+    margin-block-start: 16px;
+  }
+
+  @media screen and (min-width: 990px) {
+    .reville-header__nav {
+      display: flex;
+    }
+
+    .reville-header__cta {
+      display: inline-flex;
+    }
+
+    .reville-header__toggle,
+    .reville-header__drawer {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    class RevilleHeader extends HTMLElement {
+      connectedCallback() {
+        this.toggleBtn = this.querySelector('.reville-header__toggle');
+        this.drawer = this.querySelector('.reville-header__drawer');
+        if (!this.toggleBtn || !this.drawer) return;
+        this.toggleBtn.addEventListener('click', () => this.toggle());
+      }
+
+      toggle() {
+        const open = this.drawer.hasAttribute('hidden');
+        this.drawer.toggleAttribute('hidden', !open);
+        this.toggleBtn.setAttribute('aria-expanded', String(open));
+      }
+    }
+
+    if (!customElements.get('reville-header')) {
+      customElements.define('reville-header', RevilleHeader);
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Reville Header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "wordmark_text",
+      "label": "Wordmark",
+      "default": "REVILLE"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Get Entries"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}
