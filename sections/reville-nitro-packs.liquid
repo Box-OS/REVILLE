@@ -1,0 +1,557 @@
+{% comment %}
+  Reville "Nitro Entry Packs" — matches Stitch "REVILLE — Buy Entries Direct".
+  This is the destination of the header "GET ENTRIES" CTA: tiered entry packs a
+  customer can buy directly without booking a service or buying a product.
+
+  Each pack is a block. If a block has a `product` set, price + add-to-cart are
+  driven by that REAL Shopify product/variant and (optionally) its
+  `reville.entry_count` metafield; the manual `price`/`entries` fields are only a
+  fallback for packs not yet wired to a product.
+
+  Legal (Reference/CLAUDE.md — "Legal — Don't Guess"): the no-purchase-necessary
+  (NPN) free-entry method and its wording are still TBD. The intro line is
+  approved mockup boilerplate; replace with counsel-reviewed copy and link the
+  real free-entry route before this page goes public.
+{% endcomment %}
+
+<div
+  class="section reville-nitro spacing-style"
+  style="
+    {% render 'spacing-style', settings: section.settings %}
+    --rn-background: {{ settings.color_palette.background }};
+    --rn-color1: {{ settings.color_palette.color1 }};
+    --rn-color2: {{ settings.color_palette.color2 }};
+    --rn-color3: {{ settings.color_palette.color3 }};
+    --rn-color3-rgb: {{ settings.color_palette.color3.rgb }};
+    --rn-color4: {{ settings.color_palette.color4 }};
+    --rn-color5: {{ settings.color_palette.color5 }};
+    --rn-color6: {{ settings.color_palette.color6 }};
+    --rn-color6-rgb: {{ settings.color_palette.color6.rgb }};
+  "
+>
+  <div class="reville-nitro__inner">
+    <header class="reville-nitro__hero">
+      {% if section.settings.heading != blank %}
+        <h1 class="reville-nitro__title">{{ section.settings.heading }}</h1>
+      {% endif %}
+      {% if section.settings.subheading != blank %}
+        <p class="reville-nitro__sub">{{ section.settings.subheading }}</p>
+      {% endif %}
+    </header>
+
+    <div class="reville-nitro__grid">
+      {% for block in section.blocks %}
+        {% liquid
+          assign product = block.settings.product
+          assign variant = product.selected_or_first_available_variant
+
+          assign price_html = block.settings.price
+          if product != blank
+            assign price_html = variant.price | money
+          endif
+
+          assign entries = block.settings.entries
+          if product.metafields.reville.entry_count.value != blank
+            assign entries = product.metafields.reville.entry_count.value
+          endif
+
+          assign can_buy = false
+          if product != blank and variant.available
+            assign can_buy = true
+          endif
+
+          assign unavailable_label = 'Coming soon'
+          if product != blank and product.available == false
+            assign unavailable_label = 'Sold out'
+          endif
+        %}
+        <div class="reville-nitro__pack{% if block.settings.featured %} is-featured{% endif %}" {{ block.shopify_attributes }}>
+          {% if block.settings.featured and block.settings.featured_label != blank %}
+            <span class="reville-nitro__pack-flag">{{ block.settings.featured_label }}</span>
+          {% endif %}
+
+          <h2 class="reville-nitro__pack-name">{{ block.settings.name }}</h2>
+
+          {% if block.settings.badge_label != blank %}
+            <span class="reville-nitro__pack-badge">{{ block.settings.badge_label }}</span>
+          {% endif %}
+
+          <div class="reville-nitro__pack-entries">
+            <span class="reville-nitro__pack-entries-num">{{ entries }}</span>
+            <span class="reville-nitro__pack-entries-unit">Entries</span>
+          </div>
+
+          <div class="reville-nitro__pack-foot">
+            <div class="reville-nitro__pack-price">{{ price_html }}</div>
+
+            {% if can_buy %}
+              <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="{{ variant.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="reville-nitro__pack-btn{% if block.settings.featured %} is-primary{% endif %}">
+                  {{ block.settings.button_label | default: 'Select pack' }}
+                </button>
+              </form>
+            {% elsif block.settings.link != blank %}
+              <a href="{{ block.settings.link }}" class="reville-nitro__pack-btn{% if block.settings.featured %} is-primary{% endif %}">
+                {{ block.settings.button_label | default: 'Select pack' }}
+              </a>
+            {% else %}
+              <button type="button" class="reville-nitro__pack-btn" disabled>{{ unavailable_label }}</button>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if section.settings.formula_heading != blank %}
+      <div class="reville-nitro__formula">
+        <h3 class="reville-nitro__formula-title">{{ section.settings.formula_heading }}</h3>
+        <div class="reville-nitro__formula-row" aria-hidden="true">
+          <span class="reville-nitro__formula-chip">Price</span>
+          <span class="reville-nitro__formula-op">&times;</span>
+          <span class="reville-nitro__formula-chip is-accent">Multiplier</span>
+          <span class="reville-nitro__formula-op">=</span>
+          <span class="reville-nitro__formula-chip is-total">Total Entries</span>
+        </div>
+        {% if section.settings.formula_body != blank %}
+          <p class="reville-nitro__formula-body">{{ section.settings.formula_body }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .reville-nitro__inner {
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: var(--spacing-8, 2rem);
+  }
+
+  .reville-nitro__hero {
+    text-align: center;
+    max-width: 48rem;
+    margin: 0 auto 64px;
+  }
+
+  .reville-nitro__title {
+    font-family: var(--font-heading--family);
+    font-weight: 700;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin: 0 0 16px;
+  }
+
+  .reville-nitro__sub {
+    font-family: var(--font-body--family);
+    font-size: clamp(1rem, 2.5vw, 1.125rem);
+    line-height: 1.6;
+    color: var(--rn-color5);
+    margin: 0;
+  }
+
+  .reville-nitro__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .reville-nitro__pack {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px;
+    background: var(--rn-color1);
+    border: 1px solid var(--rn-color3);
+    border-radius: var(--style-border-radius-buttons-outset, 0.25rem);
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .reville-nitro__pack:hover {
+    transform: translateY(-4px);
+    border-block-start: 2px solid var(--rn-color6);
+    box-shadow: 0 4px 20px rgba(var(--rn-color6-rgb), 0.15);
+  }
+
+  .reville-nitro__pack.is-featured {
+    background: var(--rn-color2);
+    border-block-start: 2px solid var(--rn-color6);
+    box-shadow: 0 4px 24px rgba(var(--rn-color6-rgb), 0.18);
+  }
+
+  .reville-nitro__pack-flag {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    font-family: var(--font-mono--family);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--rn-color6);
+    padding: 4px 10px;
+    border-end-start-radius: 3px;
+  }
+
+  .reville-nitro__pack-name {
+    font-family: var(--font-heading--family);
+    font-weight: 500;
+    font-size: 1.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 8px 0 12px;
+  }
+
+  .reville-nitro__pack-badge {
+    font-family: var(--font-mono--family);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--rn-color6);
+    background: var(--rn-color4);
+    border: 1px solid var(--rn-color3);
+    border-radius: 3px;
+    padding: 4px 12px;
+    margin-block-end: 24px;
+  }
+
+  .reville-nitro__pack-entries {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+    margin-block-end: 32px;
+  }
+
+  .reville-nitro__pack-entries-num {
+    font-family: var(--font-mono--family);
+    font-size: 2.75rem;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    color: var(--color-foreground);
+  }
+
+  .reville-nitro__pack.is-featured .reville-nitro__pack-entries-num {
+    font-size: 3.5rem;
+  }
+
+  .reville-nitro__pack-entries-unit {
+    font-family: var(--font-body--family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--rn-color5);
+  }
+
+  .reville-nitro__pack.is-featured .reville-nitro__pack-entries-unit {
+    color: var(--rn-color6);
+  }
+
+  .reville-nitro__pack-foot {
+    margin-block-start: auto;
+    width: 100%;
+  }
+
+  .reville-nitro__pack-price {
+    font-family: var(--font-heading--family);
+    font-weight: 600;
+    font-size: 2rem;
+    letter-spacing: 0.02em;
+    margin-block-end: 16px;
+  }
+
+  .reville-nitro__pack-btn {
+    display: block;
+    width: 100%;
+    font-family: var(--font-mono--family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    color: var(--color-foreground);
+    background: transparent;
+    border: 2px solid var(--rn-color3);
+    border-radius: 3px;
+    padding: 14px 12px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+  }
+
+  .reville-nitro__pack-btn:hover {
+    border-color: var(--rn-color6);
+    background: var(--rn-color2);
+  }
+
+  .reville-nitro__pack-btn.is-primary {
+    color: #fff;
+    background: var(--rn-color6);
+    border-color: var(--rn-color6);
+  }
+
+  .reville-nitro__pack-btn.is-primary:hover {
+    opacity: 0.9;
+  }
+
+  .reville-nitro__pack-btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .reville-nitro__formula {
+    max-width: 48rem;
+    margin: 80px auto 0;
+    text-align: center;
+    background: var(--rn-color1);
+    border: 1px solid var(--rn-color3);
+    border-radius: var(--style-border-radius-buttons-outset, 0.25rem);
+    padding: 32px;
+  }
+
+  .reville-nitro__formula-title {
+    font-family: var(--font-heading--family);
+    font-weight: 500;
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 24px;
+  }
+
+  .reville-nitro__formula-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .reville-nitro__formula-chip {
+    font-family: var(--font-mono--family);
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--rn-color5);
+    background: var(--rn-color4);
+    border: 1px solid var(--rn-color3);
+    border-radius: 3px;
+    padding: 8px 16px;
+  }
+
+  .reville-nitro__formula-chip.is-accent {
+    color: var(--rn-color6);
+  }
+
+  .reville-nitro__formula-chip.is-total {
+    color: var(--color-foreground);
+    background: var(--rn-color2);
+    font-weight: 700;
+  }
+
+  .reville-nitro__formula-op {
+    font-family: var(--font-mono--family);
+    font-size: 1.25rem;
+    color: var(--rn-color6);
+  }
+
+  .reville-nitro__formula-body {
+    max-width: 36rem;
+    margin: 24px auto 0;
+    font-family: var(--font-body--family);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--rn-color5);
+  }
+
+  @media screen and (min-width: 750px) {
+    .reville-nitro__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .reville-nitro__grid {
+      grid-template-columns: repeat(4, 1fr);
+      align-items: stretch;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Reville Nitro Packs",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Nitro Entry Packs"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Direct access to the giveaway. No purchase necessary to enter. Select your tier below.",
+      "info": "TBD — the no-purchase-necessary free-entry wording and route are still pending legal review (Reference/CLAUDE.md)."
+    },
+    {
+      "type": "header",
+      "content": "Formula panel"
+    },
+    {
+      "type": "text",
+      "id": "formula_heading",
+      "label": "Heading",
+      "default": "The math is simple."
+    },
+    {
+      "type": "textarea",
+      "id": "formula_body",
+      "label": "Body",
+      "default": "Higher tiers unlock aggressive multipliers, maximizing your odds per dollar. All entries are instantly logged to your profile upon checkout."
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "pack",
+      "name": "Entry pack",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Shopify product",
+          "info": "When set, price and Add to cart use this real product/variant and its reville.entry_count metafield. Leave blank to use the manual fields below (preview only)."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Starter"
+        },
+        {
+          "type": "text",
+          "id": "badge_label",
+          "label": "Badge",
+          "default": "Base value"
+        },
+        {
+          "type": "text",
+          "id": "entries",
+          "label": "Entries (fallback)",
+          "default": "50"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price (fallback)",
+          "default": "$5.00"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Select pack"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Button link (used only when no product is set)"
+        },
+        {
+          "type": "checkbox",
+          "id": "featured",
+          "label": "Featured (\"most popular\")",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "featured_label",
+          "label": "Featured flag text",
+          "default": "Most popular"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Reville Nitro Packs",
+      "category": "t:categories.layout",
+      "blocks": [
+        {
+          "type": "pack",
+          "settings": {
+            "name": "Starter",
+            "badge_label": "Base value",
+            "entries": "50",
+            "price": "$5.00"
+          }
+        },
+        {
+          "type": "pack",
+          "settings": {
+            "name": "Pro",
+            "badge_label": "1.5x multiplier",
+            "entries": "150",
+            "price": "$10.00"
+          }
+        },
+        {
+          "type": "pack",
+          "settings": {
+            "name": "Elite",
+            "badge_label": "2.5x value",
+            "entries": "500",
+            "price": "$20.00",
+            "button_label": "Select elite",
+            "featured": true,
+            "featured_label": "Most popular"
+          }
+        },
+        {
+          "type": "pack",
+          "settings": {
+            "name": "Nitro",
+            "badge_label": "4x multiplier",
+            "entries": "1000",
+            "price": "$25.00"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -7,6 +7,23 @@
 
 {% liquid
   assign menu = linklists[section.settings.menu]
+
+  # Optional extra nav links defined on the section itself, so pages like
+  # Entry Packs / Profile can sit in the header without editing the Admin menu.
+  assign extra_labels = ''
+  assign extra_urls = ''
+  for i in (1..3)
+    assign label_key = 'link_' | append: i | append: '_label'
+    assign url_key = 'link_' | append: i | append: '_url'
+    assign label = section.settings[label_key]
+    assign url = section.settings[url_key]
+    if label != blank and url != blank
+      assign extra_labels = extra_labels | append: label | append: '~~'
+      assign extra_urls = extra_urls | append: url | append: '~~'
+    endif
+  endfor
+  assign extra_label_list = extra_labels | split: '~~'
+  assign extra_url_list = extra_urls | split: '~~'
 %}
 
 <reville-header
@@ -34,6 +51,16 @@
           {% if link.current %}aria-current="page"{% endif %}
         >
           {{ link.title }}
+        </a>
+      {% endfor %}
+      {% for label in extra_label_list %}
+        {% assign extra_url = extra_url_list[forloop.index0] %}
+        <a
+          href="{{ extra_url }}"
+          class="reville-header__link{% if request.path == extra_url %} is-active{% endif %}"
+          {% if request.path == extra_url %}aria-current="page"{% endif %}
+        >
+          {{ label }}
         </a>
       {% endfor %}
     </nav>
@@ -70,6 +97,15 @@
         class="reville-header__drawer-link{% if link.current or link.child_active %} is-active{% endif %}"
       >
         {{ link.title }}
+      </a>
+    {% endfor %}
+    {% for label in extra_label_list %}
+      {% assign extra_url = extra_url_list[forloop.index0] %}
+      <a
+        href="{{ extra_url }}"
+        class="reville-header__drawer-link{% if request.path == extra_url %} is-active{% endif %}"
+      >
+        {{ label }}
       </a>
     {% endfor %}
     {% if section.settings.cta_label != blank %}
@@ -290,6 +326,41 @@
       "type": "url",
       "id": "cta_link",
       "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Extra nav links",
+      "info": "Shown after the menu links, on desktop and in the mobile drawer. Use for storefront pages (Entry Packs, Profile) without editing the Admin menu."
+    },
+    {
+      "type": "text",
+      "id": "link_1_label",
+      "label": "Link 1 label"
+    },
+    {
+      "type": "url",
+      "id": "link_1_url",
+      "label": "Link 1 URL"
+    },
+    {
+      "type": "text",
+      "id": "link_2_label",
+      "label": "Link 2 label"
+    },
+    {
+      "type": "url",
+      "id": "link_2_url",
+      "label": "Link 2 URL"
+    },
+    {
+      "type": "text",
+      "id": "link_3_label",
+      "label": "Link 3 label"
+    },
+    {
+      "type": "url",
+      "id": "link_3_url",
+      "label": "Link 3 URL"
     }
   ],
   "enabled_on": {

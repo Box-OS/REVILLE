@@ -1,0 +1,109 @@
+{% doc %}
+  Entry / multiplier badge bar for Reville product cards.
+  Matches Stitch "REVILLE Shop — Minimalist Dark Data" — a steel-dim bar under
+  the product title showing how many entries the product earns and the active
+  multiplier.
+
+  Reads REAL product metafields (namespace `reville`):
+    - `entry_count`  {number}  entries this product earns
+    - `multiplier`   {number}  per-product multiplier (falls back to the
+                                shop-level `reville.current_multiplier`)
+
+  If neither value exists it renders nothing and the card's normal price block
+  stays visible instead. Never hard-code an entry number here
+  (Reference/CLAUDE.md — "Critical — Do Not Fabricate").
+{% enddoc %}
+
+{% liquid
+  assign product = closest.product
+  assign entries = product.metafields.reville.entry_count.value
+  assign multiplier = product.metafields.reville.multiplier.value
+  if multiplier == blank
+    assign multiplier = shop.metafields.reville.current_multiplier.value
+  endif
+%}
+
+{% if entries != blank or multiplier != blank %}
+  <div
+    class="reville-entry-badge"
+    style="
+      --reb-color3: {{ settings.color_palette.color3 }};
+      --reb-color4: {{ settings.color_palette.color4 }};
+      --reb-color6: {{ settings.color_palette.color6 }};
+      --reb-color6-rgb: {{ settings.color_palette.color6.rgb }};
+    "
+    {{ block.shopify_attributes }}
+  >
+    <span class="reville-entry-badge__count">
+      <svg class="reville-entry-badge__icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
+        <path
+          fill="currentColor"
+          d="M4 5a2 2 0 0 0-2 2v3a2 2 0 0 1 0 4v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3a2 2 0 0 1 0-4V7a2 2 0 0 0-2-2H4Zm11 2 1 1-8 8-1-1 8-8Zm-6 .5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"
+        />
+      </svg>
+      {%- if entries != blank -%}
+        {{ entries | times: 1 | round }} Entries
+      {%- else -%}
+        Earns entries
+      {%- endif -%}
+    </span>
+
+    {% if multiplier != blank %}
+      <span class="reville-entry-badge__mult">{{ multiplier }}x</span>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .reville-entry-badge {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-block-start: auto;
+    padding: 10px 12px;
+    background: var(--reb-color4);
+    border: 1px solid var(--reb-color3);
+    border-radius: var(--style-border-radius-buttons-outset, 0.25rem);
+  }
+
+  .reville-entry-badge__count {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono--family);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--reb-color6);
+  }
+
+  .reville-entry-badge__icon {
+    flex-shrink: 0;
+  }
+
+  .reville-entry-badge__mult {
+    font-family: var(--font-mono--family);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--reb-color6);
+    background: rgba(var(--reb-color6-rgb), 0.12);
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Reville entry badge",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Shows entries earned + active multiplier from the product's `reville.entry_count` / `reville.multiplier` metafields. Renders nothing until those metafields are set."
+    }
+  ]
+}
+{% endschema %}

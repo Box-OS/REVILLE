@@ -1,0 +1,23 @@
+{
+  "sections": {
+    "main": {
+      "type": "reville-profile",
+      "settings": {
+        "heading": "Driver Profile",
+        "min_digits": 6,
+        "draw_date": "",
+        "prize_name": "BMW M850i",
+        "prize_eyebrow": "Grand Prize",
+        "prize_spec_1_label": "Engine",
+        "prize_spec_1_value": "4.4L V8",
+        "prize_spec_2_label": "Power",
+        "prize_spec_2_value": "523 HP",
+        "padding-block-start": 48,
+        "padding-block-end": 80
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

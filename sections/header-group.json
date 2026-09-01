@@ -16,7 +16,12 @@
       "settings": {
         "wordmark_text": "REVILLE",
         "menu": "main-menu",
-        "cta_label": "Get Entries"
+        "cta_label": "Get Entries",
+        "cta_link": "/pages/nitro-packs",
+        "link_1_label": "Entry Packs",
+        "link_1_url": "/pages/nitro-packs",
+        "link_2_label": "Profile",
+        "link_2_url": "/pages/profile"
       }
     }
   },

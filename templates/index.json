@@ -16,19 +16,32 @@
           "type": "button",
           "settings": {
             "label": "Get Entries Now",
+            "link": "",
+            "open_in_new_tab": false,
             "style_class": "button-custom",
-            "custom_button_background": "#FF4D2E",
-            "custom_button_text": "#0A0B0D",
-            "custom_button_border": "#FF4D2E"
-          }
+            "custom_button_background": "#ff4d2e",
+            "custom_button_text": "#0a0b0d",
+            "custom_button_border": "#ff4d2e",
+            "link_text_color": "",
+            "width": "fit-content",
+            "custom_width": 100,
+            "width_mobile": "fit-content",
+            "custom_width_mobile": 100
+          },
+          "blocks": {}
         }
       },
-      "block_order": ["cta"],
+      "block_order": [
+        "cta"
+      ],
       "settings": {
+        "background_image": "shopify://shop_images/frame_0008.jpg",
         "eyebrow_text": "Current Sweepstakes",
         "headline": "Win the BMW M850i",
         "tagline": "Buy in. Earn entries. Win the keys.",
-        "entry_goal": 340000
+        "entry_goal": 340000,
+        "padding-block-start": 96,
+        "padding-block-end": 96
       }
     },
     "reville_mechanics": {
@@ -36,26 +49,57 @@
       "blocks": {
         "engine": {
           "type": "_reville-spec-row",
-          "settings": { "label": "Engine", "value": "4.4L Twin-Turbo V8" }
+          "settings": {
+            "label": "Engine",
+            "value": "4.4L Twin-Turbo V8"
+          },
+          "blocks": {}
         },
         "power": {
           "type": "_reville-spec-row",
-          "settings": { "label": "Power", "value": "523 HP / 553 lb-ft" }
+          "settings": {
+            "label": "Power",
+            "value": "523 HP / 553 lb-ft"
+          },
+          "blocks": {}
         },
         "zero-sixty": {
           "type": "_reville-spec-row",
-          "settings": { "label": "0-60 mph", "value": "3.6 Seconds" }
+          "settings": {
+            "label": "0-60 mph",
+            "value": "3.6 Seconds"
+          },
+          "blocks": {}
         }
       },
-      "block_order": ["engine", "power", "zero-sixty"],
+      "block_order": [
+        "engine",
+        "power",
+        "zero-sixty"
+      ],
       "settings": {
-        "heading": "The Mechanics",
+        "heading": "How it works",
         "formula_eyebrow": "Formula",
         "formula_heading": "Price × Multiplier = Entries",
+        "formula_description": "<p>Every service booked at Nurbu Auto Centre and every product purchased in the Reville Shop earns entries toward the giveaway. Bigger spends unlock higher multiplier tiers.</p>",
+        "calculator_label": "Nitro Entry Calculator",
+        "calculator_hint": "Slide the wheel to see how your spend translates to entries.",
+        "min_spend": 25,
+        "max_spend": 2500,
+        "spend_step": 25,
+        "default_spend": 500,
+        "min_multiplier": 1.5,
+        "max_multiplier": 2.5,
+        "calculator_disclaimer": "Estimated — final multiplier tiers confirmed at checkout. See Official Rules.",
+        "specs_label": "Vehicle Specs",
         "vehicle_name": "BMW M850i xDrive",
-        "specs_label": "Vehicle Specs"
+        "padding-block-start": 40,
+        "padding-block-end": 40
       }
     }
   },
-  "order": ["reville_hero", "reville_mechanics"]
+  "order": [
+    "reville_hero",
+    "reville_mechanics"
+  ]
 }

@@ -9,91 +9,14 @@
  */
 {
   "sections": {
-    "section": {
-      "type": "section",
-      "blocks": {
-        "text_tqQTNE": {
-          "type": "text",
-          "name": "Title",
-          "settings": {
-            "text": "<h1>{{ closest.collection.title }}</h1>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-primary--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "text_twGGkJ": {
-          "type": "text",
-          "name": "Description",
-          "settings": {
-            "text": "{{ closest.collection.description }}",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "rte",
-            "font": "var(--font-primary--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "text_tqQTNE",
-        "text_twGGkJ"
-      ],
-      "name": "Collection heading",
+    "reville_shop_header": {
+      "type": "reville-shop-header",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 12,
-        "section_width": "page-width",
-        "section_height": "",
-        "section_height_custom": 50,
-        "background_media": "none",
-        "background_color": "{{ settings.color_palette.color8 }}",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "heading": "Performance Gear",
+        "body": "<p>Upgrade your setup. Every dollar spent in the Reville Shop earns you direct entries into the current high-performance giveaway. Precision engineered, community approved.</p>",
+        "multiplier_override": "2X Entries",
+        "padding-block-start": 80,
+        "padding-block-end": 40
       }
     },
     "main": {
@@ -194,12 +117,17 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "reville_entry_badge": {
+              "type": "_reville-entry-badge",
+              "settings": {}
             }
           },
           "block_order": [
             "card-gallery",
             "product_title_4nY4eT",
-            "price_EzJzMm"
+            "price_EzJzMm",
+            "reville_entry_badge"
           ]
         }
       },
@@ -217,12 +145,24 @@
         "padding-inline-end": 0,
         "background_color": "{{ settings.color_palette.color8 }}",
         "padding-block-start": 0,
-        "padding-block-end": 100
+        "padding-block-end": 40
+      }
+    },
+    "reville_shop_banner": {
+      "type": "reville-shop-banner",
+      "settings": {
+        "heading": "Maximize your chances",
+        "body": "<p>Every Reville product purchase directly fuels the community and earns you mechanical entries into the grand prize draw. No hidden fees, just pure performance parts and a shot at the ultimate ride.</p>",
+        "cta_label": "View all products",
+        "cta_link": "",
+        "padding-block-start": 32,
+        "padding-block-end": 80
       }
     }
   },
   "order": [
-    "section",
-    "main"
+    "reville_shop_header",
+    "main",
+    "reville_shop_banner"
   ]
 }

@@ -1,0 +1,61 @@
+{
+  "sections": {
+    "main": {
+      "type": "reville-nitro-packs",
+      "settings": {
+        "heading": "Nitro Entry Packs",
+        "subheading": "Direct access to the giveaway. No purchase necessary to enter. Select your tier below.",
+        "formula_heading": "The math is simple.",
+        "formula_body": "Higher tiers unlock aggressive multipliers, maximizing your odds per dollar. All entries are instantly logged to your profile upon checkout.",
+        "padding-block-start": 80,
+        "padding-block-end": 80
+      },
+      "blocks": {
+        "starter": {
+          "type": "pack",
+          "settings": {
+            "name": "Starter",
+            "badge_label": "Base value",
+            "entries": "50",
+            "price": "$5.00",
+            "button_label": "Select pack"
+          }
+        },
+        "pro": {
+          "type": "pack",
+          "settings": {
+            "name": "Pro",
+            "badge_label": "1.5x multiplier",
+            "entries": "150",
+            "price": "$10.00",
+            "button_label": "Select pack"
+          }
+        },
+        "elite": {
+          "type": "pack",
+          "settings": {
+            "name": "Elite",
+            "badge_label": "2.5x value",
+            "entries": "500",
+            "price": "$20.00",
+            "button_label": "Select elite",
+            "featured": true,
+            "featured_label": "Most popular"
+          }
+        },
+        "nitro": {
+          "type": "pack",
+          "settings": {
+            "name": "Nitro",
+            "badge_label": "4x multiplier",
+            "entries": "1000",
+            "price": "$25.00",
+            "button_label": "Select pack"
+          }
+        }
+      },
+      "block_order": ["starter", "pro", "elite", "nitro"]
+    }
+  },
+  "order": ["main"]
+}
