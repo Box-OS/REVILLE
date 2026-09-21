@@ -12,6 +12,8 @@ In development (paused). Front-end storefront is functional. Backend entry-track
 ## What's in this build
 
 - Custom Shopify theme (Liquid, JavaScript, CSS)
+- Functional navigational menus (mock)
+- Entry Calculator
 
 ## Tech stack
 
