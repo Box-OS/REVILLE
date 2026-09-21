@@ -1,13 +1,13 @@
 # Reville — Dream Car Giveaway Storefront
 
-A Shopify e-commerce storefront built for Reville, a Toronto-based dream-car giveaway brand. The project is a client build currently paused for funding reasons; this repo hosts the theme in its current state as a live demo.
+A Shopify e-commerce storefront built for Reville, a Toronto-based dream-car giveaway brand, inspired by 80Eighty. The project is a client build currently paused for funding reasons; this repo hosts the theme in its current state as a live demo.
 
 **Live demo:** https://reville-nfzoxexk.myshopify.com  
 **Password:** reville
 
 ## Status
 
-In development. Front-end storefront (browsing, cart, checkout flow) is functional. Backend entry-tracking logic is not yet built.
+In development (paused). Front-end storefront is functional. Backend entry-tracking logic is not built yet. Products are placeholders and need to be swapped with DSER products.
 
 ## What's in this build
 
@@ -15,11 +15,7 @@ In development. Front-end storefront (browsing, cart, checkout flow) is function
 
 ## Tech stack
 
-Shopify · Liquid · JavaScript · CSS
-
-## Notes
-
-Built as a freelance client project. Screenshots and a full write-up coming soon.
+Shopify · Liquid · JavaScript · CSS . Claude Code
 
 ## Screenshots
 
