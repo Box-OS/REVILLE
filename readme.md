@@ -1,4 +1,4 @@
-# Reville — Dream Car Giveaway Storefront
+# Reville: Dream Car Giveaway Storefront
 
 A Shopify e-commerce storefront built for Reville, a Toronto-based dream-car giveaway brand, inspired by 80Eighty. The project is a client build currently paused for funding reasons; this repo hosts the theme in its current state as a live demo.
 
