@@ -12,7 +12,6 @@ In development. Front-end storefront (browsing, cart, checkout flow) is function
 ## What's in this build
 
 - Custom Shopify theme (Liquid, JavaScript, CSS)
-- [Add 2–4 bullets on specific things you built: custom sections, responsive layout choices, any JS interactions, how the entry/product pages work]
 
 ## Tech stack
 
@@ -24,4 +23,5 @@ Built as a freelance client project. Screenshots and a full write-up coming soon
 
 ## Screenshots
 
-[Drop 2–3 screenshots here once you have them — homepage, product/entry page, cart]
+<img width="2073" height="1212" alt="image" src="https://github.com/user-attachments/assets/52884165-56ab-4574-8936-c2055fa26d2e" />
+<img width="2152" height="1142" alt="image" src="https://github.com/user-attachments/assets/24d4a152-b510-4ac8-b89f-4065dc6955e6" />
