@@ -1,40 +1,134 @@
 <div
   class="section reville-hero spacing-style"
-  style="{% render 'spacing-style', settings: section.settings %}"
+  style="
+    {% render 'spacing-style', settings: section.settings %}
+    --reville-hero-background: {{ settings.color_palette.background }};
+    --reville-hero-background-rgb: {{ settings.color_palette.background.rgb }};
+    --reville-hero-color1-rgb: {{ settings.color_palette.color1.rgb }};
+    --reville-hero-color3: {{ settings.color_palette.color3 }};
+    --reville-hero-color5: {{ settings.color_palette.color5 }};
+    --reville-hero-color6: {{ settings.color_palette.color6 }};
+  "
   data-testid="reville-hero-{{ section.id }}"
 >
-  <p class="reville-hero__wordmark">{{ section.settings.wordmark_text }}</p>
-  <p class="reville-hero__tagline" style="color: {{ settings.color_palette.color5 }};">{{ section.settings.tagline }}</p>
+  {% if section.settings.background_image != blank %}
+    <div class="reville-hero__media">
+      {{
+        section.settings.background_image
+        | image_url: width: 3840
+        | image_tag:
+          loading: 'eager',
+          fetchpriority: 'high',
+          class: 'reville-hero__media-image',
+          alt: section.settings.background_image.alt,
+          sizes: '100vw',
+          widths: '750, 1100, 1500, 2200, 3000, 3840'
+      }}
+      <div class="reville-hero__scrim"></div>
+    </div>
+  {% endif %}
 
-  {% render 'reville-gauge', goal: section.settings.entry_goal %}
+  <div class="reville-hero__content">
+    {% if section.settings.eyebrow_text != blank %}
+      <p class="reville-hero__eyebrow">{{ section.settings.eyebrow_text }}</p>
+    {% endif %}
 
-  <div class="reville-hero__cta">
-    {% content_for 'blocks' %}
+    {% if section.settings.headline != blank %}
+      <h1 class="reville-hero__headline">{{ section.settings.headline }}</h1>
+    {% endif %}
+
+    {% if section.settings.tagline != blank %}
+      <p class="reville-hero__tagline">{{ section.settings.tagline }}</p>
+    {% endif %}
+
+    {% render 'reville-gauge', goal: section.settings.entry_goal %}
+
+    <div class="reville-hero__cta">
+      {% content_for 'blocks' %}
+    </div>
   </div>
 </div>
 
 {% stylesheet %}
   .reville-hero {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     text-align: center;
     gap: 24px;
+    min-height: 90vh;
+    overflow: hidden;
   }
 
-  .reville-hero__wordmark {
+  .reville-hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .reville-hero__media-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.6;
+  }
+
+  .reville-hero__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(var(--reville-hero-background-rgb), 0.9) 0%,
+      rgba(var(--reville-hero-background-rgb), 0.6) 60%,
+      var(--reville-hero-background) 100%
+    );
+  }
+
+  .reville-hero__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    max-width: 64rem;
+    padding-inline: var(--spacing-5, 1.5rem);
+  }
+
+  .reville-hero__eyebrow {
+    display: inline-block;
+    margin: 0;
+    padding: 4px 16px;
+    font-family: var(--font-mono--family);
+    font-size: 0.75rem;
+    letter-spacing: var(--letter-spacing-lg, 0.2em);
+    text-transform: uppercase;
+    color: var(--reville-hero-color6);
+    background: rgba(var(--reville-hero-color1-rgb), 0.5);
+    border: 1px solid var(--reville-hero-color3);
+    border-radius: var(--style-border-radius-buttons-outset, 0.25rem);
+    backdrop-filter: blur(4px);
+  }
+
+  .reville-hero__headline {
     font-family: var(--font-heading--family);
     font-weight: var(--font-heading--weight);
-    font-size: clamp(3rem, 10vw, 6.5rem);
-    line-height: 1;
+    font-size: clamp(2.75rem, 8vw, 5rem);
+    line-height: 1.1;
     letter-spacing: var(--letter-spacing-sm);
     text-transform: uppercase;
     margin: 0;
+    max-width: 40rem;
   }
 
   .reville-hero__tagline {
     font-family: var(--font-body--family);
     font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: var(--reville-hero-color5);
     max-width: 32rem;
     margin: 0;
   }
@@ -49,10 +143,21 @@
   "name": "Reville Hero",
   "settings": [
     {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
       "type": "text",
-      "id": "wordmark_text",
-      "label": "Wordmark",
-      "default": "REVILLE"
+      "id": "eyebrow_text",
+      "label": "Eyebrow badge",
+      "default": "Current Sweepstakes"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Win the BMW M850i"
     },
     {
       "type": "text",
@@ -105,7 +210,7 @@
         "cta": {
           "type": "button",
           "settings": {
-            "label": "Enter Now",
+            "label": "Get Entries Now",
             "style_class": "button-custom",
             "custom_button_background": "#FF4D2E",
             "custom_button_text": "#0A0B0D",

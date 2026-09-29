@@ -1,0 +1,7 @@
+Notes for myself:
+- The target # of entries for funding is 350 000 entries.
+
+
+Post-launch stuff to work on:
+- profile dashboard with entry system
+- 

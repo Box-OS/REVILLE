@@ -1,0 +1,224 @@
+{% comment %}
+  Reville catalogue header — matches Stitch "REVILLE Shop — Minimalist Dark Data".
+  Big "PERFORMANCE GEAR" display heading + intro copy + a "CURRENT MULTIPLIER"
+  badge panel.
+
+  The multiplier badge reads the real shop metafield `reville.current_multiplier`.
+  If that metafield doesn't exist the badge is hidden (never show a fabricated
+  multiplier — Reference/CLAUDE.md). `multiplier_override` exists only so the
+  badge can be previewed in the dev theme; leave it blank in production.
+
+  This section also carries the CSS that skins Horizon's collection product grid
+  into the Midnight Redline "steel panel" card look from the mockup.
+{% endcomment %}
+
+{% liquid
+  assign multiplier = shop.metafields.reville.current_multiplier.value
+  assign multiplier_label = section.settings.multiplier_override
+  if multiplier_label == blank and multiplier != blank
+    assign multiplier_label = multiplier | append: 'X Entries'
+  endif
+%}
+
+<div
+  class="section reville-shop-header spacing-style"
+  style="
+    {% render 'spacing-style', settings: section.settings %}
+    --rsh-color1: {{ settings.color_palette.color1 }};
+    --rsh-color2: {{ settings.color_palette.color2 }};
+    --rsh-color3: {{ settings.color_palette.color3 }};
+    --rsh-color3-rgb: {{ settings.color_palette.color3.rgb }};
+    --rsh-color5: {{ settings.color_palette.color5 }};
+    --rsh-color6: {{ settings.color_palette.color6 }};
+    --rsh-color6-rgb: {{ settings.color_palette.color6.rgb }};
+  "
+>
+  <header class="reville-shop-header__bar">
+    <div class="reville-shop-header__intro">
+      {% if section.settings.heading != blank %}
+        <h1 class="reville-shop-header__heading">{{ section.settings.heading }}</h1>
+      {% endif %}
+      {% if section.settings.body != blank %}
+        <div class="reville-shop-header__body">{{ section.settings.body }}</div>
+      {% endif %}
+    </div>
+
+    {% if multiplier_label != blank %}
+      <div class="reville-shop-header__multiplier">
+        <span class="reville-shop-header__multiplier-flame" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26" focusable="false">
+            <path
+              fill="currentColor"
+              d="M12 2s5 4.5 5 10a5 5 0 0 1-10 0c0-1.7.7-3.2 1.5-4.4C8.3 9 7 10.8 7 13a5 5 0 0 0 .3 1.7A6.9 6.9 0 0 1 6 10.5C6 5.9 12 2 12 2Zm0 10.5c1.4 1.2 2 2.2 2 3.3a2 2 0 0 1-4 0c0-1.1.6-2.1 2-3.3Z"
+            />
+          </svg>
+        </span>
+        <div>
+          <div class="reville-shop-header__multiplier-label">Current Multiplier</div>
+          <div class="reville-shop-header__multiplier-value">{{ multiplier_label }}</div>
+        </div>
+      </div>
+    {% endif %}
+  </header>
+</div>
+
+{% stylesheet %}
+  .reville-shop-header {
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: var(--spacing-8, 2rem);
+  }
+
+  .reville-shop-header__bar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    padding-block-end: 24px;
+    border-block-end: 1px solid var(--rsh-color3);
+  }
+
+  .reville-shop-header__heading {
+    font-family: var(--font-heading--family);
+    font-weight: 700;
+    font-size: clamp(2.75rem, 8vw, 5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin: 0 0 16px;
+  }
+
+  .reville-shop-header__body {
+    font-family: var(--font-body--family);
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    line-height: 1.6;
+    color: var(--rsh-color5);
+    max-width: 34rem;
+  }
+
+  .reville-shop-header__body p {
+    margin: 0;
+  }
+
+  .reville-shop-header__multiplier {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--rsh-color1);
+    border: 1px solid var(--rsh-color3);
+    border-radius: var(--style-border-radius-buttons-outset, 0.25rem);
+  }
+
+  .reville-shop-header__multiplier-flame {
+    color: var(--rsh-color6);
+    display: inline-flex;
+  }
+
+  .reville-shop-header__multiplier-label {
+    font-family: var(--font-body--family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--rsh-color5);
+    margin-block-end: 4px;
+  }
+
+  .reville-shop-header__multiplier-value {
+    font-family: var(--font-mono--family);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: var(--rsh-color6);
+  }
+
+  @media screen and (min-width: 750px) {
+    .reville-shop-header__bar {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+  }
+
+  /* --- Skin Horizon's product grid into the Midnight Redline "steel panel" card.
+     Global on purpose: collection, search and product-recommendation grids
+     should all read the same in this theme. --- */
+  .product-card {
+    background: var(--rsh-color1);
+    border: 1px solid var(--rsh-color3);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .product-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--rsh-color6);
+    box-shadow: inset 0 2px 0 var(--rsh-color6), 0 12px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  .product-card__content {
+    padding: 20px;
+    border-block-start: 1px solid var(--rsh-color3);
+    background: var(--rsh-color1);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Reville Shop Header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Performance Gear"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Intro copy",
+      "default": "<p>Upgrade your setup. Every dollar spent in the Reville Shop earns you direct entries into the current high-performance giveaway. Precision engineered, community approved.</p>"
+    },
+    {
+      "type": "text",
+      "id": "multiplier_override",
+      "label": "Multiplier badge — preview override",
+      "info": "Dev/preview only. Leave blank in production: the badge reads the shop metafield reville.current_multiplier and hides itself when that is not set."
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reville Shop Header",
+      "category": "t:categories.layout"
+    }
+  ]
+}
+{% endschema %}

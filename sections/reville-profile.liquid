@@ -1,0 +1,810 @@
+{% comment %}
+  Reville "Driver Profile" — matches Stitch "User Profile — Top Scorer Elite".
+
+  Honest-data rules (Reference/CLAUDE.md):
+    - Logged out  -> gated state with a sign-in link. No odometer, no activity.
+    - Total entries reads the real customer metafield `reville.total_entries`
+      and renders 0 (not a placeholder) when it is absent.
+    - Recent activity is the customer's real Shopify orders. Per-order entries
+      come from the order metafield `reville.entries`; shown as "—" when unset.
+    - The draw countdown ticks toward a real date set in `draw_date`. With no
+      date configured it shows "TBD", never a fake timer.
+  The mockup's "TOP 15% OF ENTRANTS" rank badge is intentionally omitted — there
+  is no real ranking data source yet.
+{% endcomment %}
+
+{% liquid
+  assign entries = customer.metafields.reville.total_entries.value | default: 0
+  assign min_digits = section.settings.min_digits
+  if min_digits < 1
+    assign min_digits = 1
+  endif
+
+  assign padded = entries | append: ''
+  for i in (1..18)
+    if padded.size >= min_digits
+      break
+    endif
+    assign padded = '0' | append: padded
+  endfor
+  assign digit_chars = padded | split: ''
+  assign digit_total = digit_chars.size
+%}
+
+<div
+  class="section reville-profile spacing-style"
+  style="
+    {% render 'spacing-style', settings: section.settings %}
+    --rp-background: {{ settings.color_palette.background }};
+    --rp-color1: {{ settings.color_palette.color1 }};
+    --rp-color2: {{ settings.color_palette.color2 }};
+    --rp-color3: {{ settings.color_palette.color3 }};
+    --rp-color3-rgb: {{ settings.color_palette.color3.rgb }};
+    --rp-color4: {{ settings.color_palette.color4 }};
+    --rp-color5: {{ settings.color_palette.color5 }};
+    --rp-color6: {{ settings.color_palette.color6 }};
+    --rp-color6-rgb: {{ settings.color_palette.color6.rgb }};
+  "
+>
+  <div class="reville-profile__inner">
+    <header class="reville-profile__header">
+      <div>
+        <h1 class="reville-profile__title">{{ section.settings.heading | default: 'Driver Profile' }}</h1>
+        {% if customer %}
+          <p class="reville-profile__meta">ID: REV-{{ customer.id }} &nbsp;|&nbsp; STATUS: ACTIVE</p>
+        {% else %}
+          <p class="reville-profile__meta">STATUS: SIGNED OUT</p>
+        {% endif %}
+      </div>
+    </header>
+
+    {% if customer == blank %}
+      <div class="reville-profile__gate">
+        <h2 class="reville-profile__gate-title">Sign in to view your entries</h2>
+        <p class="reville-profile__gate-body">
+          Your verified entry total, recent activity and the live draw countdown are tied to your Reville account.
+        </p>
+        <a href="{{ routes.account_login_url }}" class="reville-profile__btn reville-profile__btn--primary">Sign in</a>
+        <a href="{{ routes.account_register_url }}" class="reville-profile__gate-link">Create an account</a>
+      </div>
+    {% else %}
+      <div class="reville-profile__grid">
+        <div class="reville-profile__col reville-profile__col--main">
+          <section class="reville-profile__panel reville-profile__panel--odo">
+            <div class="reville-profile__panel-head">
+              <h2 class="reville-profile__eyebrow">
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 4a8 8 0 0 0-8 8 8 8 0 0 0 2 5.3l1.5-1.4A6 6 0 0 1 6 12a6 6 0 0 1 12 0 6 6 0 0 1-1.5 3.9l1.5 1.4A8 8 0 0 0 20 12a8 8 0 0 0-8-8Zm3.5 4.5-4 3.2a1.3 1.3 0 1 0 1.3 1.3l2.7-4.5Z"/></svg>
+                Total Verified Entries
+              </h2>
+              <span class="reville-profile__tag">
+                {%- if section.settings.draw_date != blank -%}Live sync{%- else -%}Synced{%- endif -%}
+              </span>
+            </div>
+
+            <div class="reville-profile__odometer" role="img" aria-label="{{ entries }} verified entries">
+              {% for char in digit_chars %}
+                {% assign pos_from_right = digit_total | minus: forloop.index0 %}
+                {% assign pos_mod_3 = pos_from_right | modulo: 3 %}
+                {% if forloop.index0 > 0 and pos_mod_3 == 0 %}
+                  <span class="reville-profile__odometer-comma">,</span>
+                {% endif %}
+                {% assign is_hot = false %}
+                {% if pos_from_right <= 3 %}
+                  {% assign is_hot = true %}
+                {% endif %}
+                <span class="reville-profile__digit{% if is_hot %} is-hot{% endif %}">{{ char }}</span>
+              {% endfor %}
+            </div>
+
+            {% if customer.metafields.reville.total_entries.value == blank %}
+              <p class="reville-profile__note">No verified entries recorded yet.</p>
+            {% endif %}
+          </section>
+
+          <section class="reville-profile__panel">
+            <h3 class="reville-profile__panel-title">Recent Activity</h3>
+            {% if customer.orders.size > 0 %}
+              <ul class="reville-profile__activity">
+                {% for order in customer.orders limit: 5 %}
+                  {% liquid
+                    assign order_entries = order.metafields.reville.entries.value
+                    assign first_item = order.line_items.first
+                    assign extra = order.line_items.size | minus: 1
+                  %}
+                  <li class="reville-profile__activity-row">
+                    <div class="reville-profile__activity-main">
+                      <span class="reville-profile__activity-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="20" height="20" focusable="false"><path fill="currentColor" d="M4 7h16v2H4V7Zm2 4h12l-1 6H7l-1-6Zm3 2 .5 3h1l-.3-3H9Zm5 0-.3 3h1l.5-3h-1.2Z"/></svg>
+                      </span>
+                      <div>
+                        <a class="reville-profile__activity-name" href="{{ order.customer_url }}">
+                          {{ first_item.title | default: order.name }}{% if extra > 0 %} +{{ extra }} more{% endif %}
+                        </a>
+                        <div class="reville-profile__activity-sub">
+                          {{ order.created_at | date: '%b %d, %Y' }} &bull; {{ order.name }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="reville-profile__activity-entries">
+                      <div class="reville-profile__activity-count">
+                        {%- if order_entries != blank -%}+{{ order_entries }}{%- else -%}—{%- endif -%}
+                      </div>
+                      <div class="reville-profile__activity-unit">Entries</div>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="reville-profile__note">No orders yet. Entries from Nurbu services and Reville Shop purchases will show up here.</p>
+            {% endif %}
+            <a href="{{ routes.account_url }}" class="reville-profile__btn reville-profile__btn--ghost">View all history</a>
+          </section>
+        </div>
+
+        <div class="reville-profile__col reville-profile__col--side">
+          <section class="reville-profile__panel reville-profile__panel--countdown">
+            <h3 class="reville-profile__eyebrow">Draw Countdown</h3>
+            {% if section.settings.draw_date != blank %}
+              <reville-countdown class="reville-profile__countdown" data-deadline="{{ section.settings.draw_date }}">
+                <div class="reville-profile__count-cell"><span data-unit="days">--</span><small>Days</small></div>
+                <div class="reville-profile__count-cell"><span data-unit="hours">--</span><small>Hrs</small></div>
+                <div class="reville-profile__count-cell"><span data-unit="minutes" class="is-hot">--</span><small>Min</small></div>
+                <div class="reville-profile__count-cell"><span data-unit="seconds" class="is-hot">--</span><small>Sec</small></div>
+              </reville-countdown>
+            {% else %}
+              <div class="reville-profile__countdown">
+                <div class="reville-profile__count-cell"><span>TBD</span><small>Draw date</small></div>
+              </div>
+            {% endif %}
+          </section>
+
+          <section class="reville-profile__panel reville-profile__panel--prize">
+            {% if section.settings.prize_image != blank %}
+              <div class="reville-profile__prize-media">
+                {{ section.settings.prize_image | image_url: width: 800 | image_tag: loading: 'lazy', alt: section.settings.prize_name, class: 'reville-profile__prize-img' }}
+                <div class="reville-profile__prize-scrim"></div>
+                <div class="reville-profile__prize-caption">
+                  <h3 class="reville-profile__panel-title">{{ section.settings.prize_name }}</h3>
+                  <div class="reville-profile__eyebrow reville-profile__eyebrow--accent">{{ section.settings.prize_eyebrow }}</div>
+                </div>
+              </div>
+            {% else %}
+              <div class="reville-profile__prize-caption reville-profile__prize-caption--flat">
+                <h3 class="reville-profile__panel-title">{{ section.settings.prize_name }}</h3>
+                <div class="reville-profile__eyebrow reville-profile__eyebrow--accent">{{ section.settings.prize_eyebrow }}</div>
+              </div>
+            {% endif %}
+
+            <div class="reville-profile__prize-body">
+              <div class="reville-profile__prize-specs">
+                <div>
+                  <div class="reville-profile__eyebrow">{{ section.settings.prize_spec_1_label }}</div>
+                  <div class="reville-profile__prize-spec-value">{{ section.settings.prize_spec_1_value }}</div>
+                </div>
+                <div>
+                  <div class="reville-profile__eyebrow">{{ section.settings.prize_spec_2_label }}</div>
+                  <div class="reville-profile__prize-spec-value">{{ section.settings.prize_spec_2_value }}</div>
+                </div>
+              </div>
+              {% if section.settings.prize_specs_url != blank %}
+                <a href="{{ section.settings.prize_specs_url }}" class="reville-profile__prize-link">
+                  <span>View full specs</span>
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="currentColor" d="M5 11h11.2l-4.6-4.6L13 5l7 7-7 7-1.4-1.4 4.6-4.6H5v-2Z"/></svg>
+                </a>
+              {% endif %}
+            </div>
+          </section>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  (function () {
+    if (customElements.get('reville-countdown')) return;
+    class RevilleCountdown extends HTMLElement {
+      connectedCallback() {
+        const raw = this.getAttribute('data-deadline');
+        this.deadline = raw ? new Date(raw).getTime() : NaN;
+        if (isNaN(this.deadline)) return;
+        this.cells = {
+          days: this.querySelector('[data-unit="days"]'),
+          hours: this.querySelector('[data-unit="hours"]'),
+          minutes: this.querySelector('[data-unit="minutes"]'),
+          seconds: this.querySelector('[data-unit="seconds"]'),
+        };
+        this.tick();
+        this.timer = setInterval(() => this.tick(), 1000);
+      }
+      disconnectedCallback() {
+        if (this.timer) clearInterval(this.timer);
+      }
+      tick() {
+        let diff = Math.max(0, this.deadline - Date.now());
+        const d = Math.floor(diff / 86400000); diff -= d * 86400000;
+        const h = Math.floor(diff / 3600000); diff -= h * 3600000;
+        const m = Math.floor(diff / 60000); diff -= m * 60000;
+        const s = Math.floor(diff / 1000);
+        const pad = (n) => String(n).padStart(2, '0');
+        if (this.cells.days) this.cells.days.textContent = pad(d);
+        if (this.cells.hours) this.cells.hours.textContent = pad(h);
+        if (this.cells.minutes) this.cells.minutes.textContent = pad(m);
+        if (this.cells.seconds) this.cells.seconds.textContent = pad(s);
+      }
+    }
+    customElements.define('reville-countdown', RevilleCountdown);
+  })();
+</script>
+
+{% stylesheet %}
+  .reville-profile__inner {
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: var(--spacing-8, 2rem);
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .reville-profile__header {
+    border-block-end: 1px solid var(--rp-color3);
+    padding-block-end: 24px;
+  }
+
+  .reville-profile__title {
+    font-family: var(--font-heading--family);
+    font-weight: 600;
+    font-size: clamp(1.75rem, 4vw, 2rem);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .reville-profile__meta {
+    font-family: var(--font-mono--family);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--rp-color5);
+    margin: 8px 0 0;
+  }
+
+  /* Gate */
+  .reville-profile__gate {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--rp-color1);
+    border: 1px solid var(--rp-color3);
+    border-block-start: 2px solid var(--rp-color6);
+    border-radius: 0.25rem;
+    padding: 40px;
+    max-width: 32rem;
+  }
+
+  .reville-profile__gate-title {
+    font-family: var(--font-heading--family);
+    font-weight: 600;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
+
+  .reville-profile__gate-body {
+    font-family: var(--font-body--family);
+    color: var(--rp-color5);
+    line-height: 1.6;
+    margin: 0 0 8px;
+  }
+
+  .reville-profile__gate-link {
+    font-family: var(--font-mono--family);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--rp-color5);
+  }
+
+  /* Buttons */
+  .reville-profile__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono--family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: var(--style-border-radius-buttons-outset, 0.25rem);
+  }
+
+  .reville-profile__btn--primary {
+    color: #fff;
+    background: var(--rp-color6);
+  }
+
+  .reville-profile__btn--ghost {
+    width: 100%;
+    margin-block-start: 24px;
+    color: var(--color-foreground);
+    background: transparent;
+    border: 2px solid var(--rp-color3);
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .reville-profile__btn--ghost:hover {
+    border-color: var(--rp-color6);
+    color: var(--rp-color6);
+  }
+
+  /* Grid */
+  .reville-profile__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .reville-profile__col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .reville-profile__panel {
+    background: var(--rp-color1);
+    border: 1px solid var(--rp-color3);
+    border-radius: 0.25rem;
+    padding: 24px;
+  }
+
+  .reville-profile__panel--odo {
+    border-block-start: 2px solid var(--rp-color6);
+    padding: 32px;
+    background-image:
+      linear-gradient(to right, rgba(var(--rp-color3-rgb), 0.12) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(var(--rp-color3-rgb), 0.12) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .reville-profile__panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-block-end: 24px;
+  }
+
+  .reville-profile__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body--family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--rp-color5);
+    margin: 0;
+  }
+
+  .reville-profile__eyebrow--accent {
+    color: var(--rp-color6);
+  }
+
+  .reville-profile__tag {
+    font-family: var(--font-mono--family);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--rp-color6);
+    background: var(--rp-color4);
+    border: 1px solid var(--rp-color3);
+    border-radius: 3px;
+    padding: 4px 10px;
+  }
+
+  .reville-profile__odometer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 32px 16px;
+    background: var(--rp-background);
+    border: 1px solid var(--rp-color3);
+    border-radius: 0.5rem;
+  }
+
+  .reville-profile__digit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(2.25rem, 8vw, 3.5rem);
+    height: clamp(3.25rem, 12vw, 5rem);
+    font-family: var(--font-mono--family);
+    font-size: clamp(1.75rem, 6vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    color: var(--color-foreground);
+    background: linear-gradient(180deg, var(--rp-color1) 0%, var(--rp-color2) 20%, var(--rp-color2) 80%, var(--rp-color1) 100%);
+    border: 1px solid var(--rp-color3);
+    border-radius: 4px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .reville-profile__digit.is-hot {
+    color: var(--rp-color6);
+    border-block-end: 2px solid var(--rp-color6);
+  }
+
+  .reville-profile__odometer-comma {
+    align-self: flex-end;
+    padding-block-end: 10px;
+    font-family: var(--font-mono--family);
+    font-size: clamp(1.75rem, 6vw, 2.75rem);
+    color: var(--rp-color5);
+  }
+
+  .reville-profile__note {
+    margin: 16px 0 0;
+    font-family: var(--font-body--family);
+    font-size: 0.875rem;
+    color: var(--rp-color5);
+  }
+
+  .reville-profile__panel-title {
+    font-family: var(--font-heading--family);
+    font-weight: 500;
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 20px;
+    padding-block-end: 16px;
+    border-block-end: 1px solid var(--rp-color3);
+  }
+
+  .reville-profile__activity {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .reville-profile__activity-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px;
+    background: var(--rp-color2);
+    border: 1px solid var(--rp-color3);
+    border-radius: 0.25rem;
+    transition: border-color 0.2s ease;
+  }
+
+  .reville-profile__activity-row:hover {
+    border-color: var(--rp-color6);
+  }
+
+  .reville-profile__activity-main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .reville-profile__activity-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    color: var(--rp-color5);
+    background: var(--rp-background);
+    border: 1px solid var(--rp-color3);
+    border-radius: 0.25rem;
+  }
+
+  .reville-profile__activity-name {
+    display: block;
+    font-family: var(--font-body--family);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .reville-profile__activity-name:hover {
+    color: var(--rp-color6);
+  }
+
+  .reville-profile__activity-sub {
+    font-family: var(--font-mono--family);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--rp-color5);
+    margin-block-start: 4px;
+  }
+
+  .reville-profile__activity-entries {
+    text-align: end;
+    flex-shrink: 0;
+  }
+
+  .reville-profile__activity-count {
+    font-family: var(--font-mono--family);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--rp-color6);
+  }
+
+  .reville-profile__activity-unit {
+    font-family: var(--font-body--family);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--rp-color5);
+  }
+
+  /* Countdown */
+  .reville-profile__panel--countdown {
+    background-image:
+      linear-gradient(to right, rgba(var(--rp-color3-rgb), 0.12) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(var(--rp-color3-rgb), 0.12) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .reville-profile__countdown {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-block-start: 16px;
+  }
+
+  .reville-profile__count-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 4px;
+    background: var(--rp-background);
+    border: 1px solid var(--rp-color3);
+    border-radius: 0.25rem;
+    text-align: center;
+  }
+
+  .reville-profile__count-cell span {
+    font-family: var(--font-mono--family);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground);
+  }
+
+  .reville-profile__count-cell span.is-hot {
+    color: var(--rp-color6);
+  }
+
+  .reville-profile__count-cell small {
+    font-family: var(--font-mono--family);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--rp-color5);
+  }
+
+  /* Prize card */
+  .reville-profile__panel--prize {
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .reville-profile__prize-media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-block-end: 1px solid var(--rp-color3);
+  }
+
+  .reville-profile__prize-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+  }
+
+  .reville-profile__prize-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--rp-color1), transparent 60%);
+  }
+
+  .reville-profile__prize-caption {
+    position: absolute;
+    inset-block-end: 16px;
+    inset-inline-start: 16px;
+  }
+
+  .reville-profile__prize-caption--flat {
+    position: static;
+    padding: 24px 24px 0;
+  }
+
+  .reville-profile__prize-caption .reville-profile__panel-title {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .reville-profile__prize-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .reville-profile__prize-specs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .reville-profile__prize-spec-value {
+    font-family: var(--font-mono--family);
+    font-size: 1rem;
+    color: var(--color-foreground);
+    margin-block-start: 4px;
+  }
+
+  .reville-profile__prize-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-block-start: 16px;
+    border-block-start: 1px solid var(--rp-color3);
+    font-family: var(--font-heading--family);
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    text-decoration: none;
+  }
+
+  .reville-profile__prize-link:hover {
+    color: var(--rp-color6);
+  }
+
+  @media screen and (min-width: 990px) {
+    .reville-profile__grid {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Reville Profile",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Driver Profile"
+    },
+    {
+      "type": "range",
+      "id": "min_digits",
+      "label": "Odometer digits",
+      "min": 3,
+      "max": 9,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Draw countdown"
+    },
+    {
+      "type": "text",
+      "id": "draw_date",
+      "label": "Draw date/time (ISO 8601)",
+      "info": "e.g. 2026-12-01T20:00:00-05:00. Leave blank to show TBD — never shows a fake timer. TBD pending the confirmed draw date."
+    },
+    {
+      "type": "header",
+      "content": "Grand prize card"
+    },
+    {
+      "type": "image_picker",
+      "id": "prize_image",
+      "label": "Prize image"
+    },
+    {
+      "type": "text",
+      "id": "prize_name",
+      "label": "Prize name",
+      "default": "BMW M850i"
+    },
+    {
+      "type": "text",
+      "id": "prize_eyebrow",
+      "label": "Prize eyebrow",
+      "default": "Grand Prize"
+    },
+    {
+      "type": "text",
+      "id": "prize_spec_1_label",
+      "label": "Spec 1 label",
+      "default": "Engine"
+    },
+    {
+      "type": "text",
+      "id": "prize_spec_1_value",
+      "label": "Spec 1 value",
+      "default": "4.4L V8"
+    },
+    {
+      "type": "text",
+      "id": "prize_spec_2_label",
+      "label": "Spec 2 label",
+      "default": "Power"
+    },
+    {
+      "type": "text",
+      "id": "prize_spec_2_value",
+      "label": "Spec 2 value",
+      "default": "523 HP"
+    },
+    {
+      "type": "url",
+      "id": "prize_specs_url",
+      "label": "\"View full specs\" link"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reville Profile",
+      "category": "t:categories.layout"
+    }
+  ]
+}
+{% endschema %}
